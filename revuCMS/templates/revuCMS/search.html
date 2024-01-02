@@ -1,0 +1,21 @@
+{% extends "revuCMS/layout.html" %}
+
+{% block body %}
+    {% if searchQuery %}
+        <h2>Search Results For {{ searchQuery }}</h2>
+        {% if courseSearch %}
+            {% for course in courseSearch %}
+            <div class="card mx-3 my-5" style="width: 18rem;">
+                <img src="{{ course.imageUrl }}" class="card-img-top" alt="{{ course.title }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ course.title }}</h5>
+                    <p class="card-text">{{ course.description }}</p>
+                    <a href="{% url 'course' id=course.id %}" class="btn btn-primary">Details</a>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+        <h2>No Search Results For {{ searchQuery }}</h2>
+        {% endif %}
+    {% endif %}
+{% endblock %}

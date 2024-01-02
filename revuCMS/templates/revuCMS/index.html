@@ -1,0 +1,27 @@
+{% extends "revuCMS/layout.html" %}
+
+{% block body %}
+    <h2>Active Courses</h2>
+    <form action="{% url 'displayCategory' %}" method="POST" class="my-3">
+        {% csrf_token %}
+        <label for="category">Select a category:</label>
+        <select name="category" class="form-select form-select-sm my-3" aria-label="Default select example">
+            {% for category in categories %}
+                <option value="{{ category }}">{{ category }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="btn btn-secondary">Filter</button>
+    </form>
+    <div class="row mx-3">
+        {% for course in courses %}
+            <div class="card mx-3" style="width: 18rem;">
+                <img src="{{ course.imageUrl }}" class="card-img-top" alt="{{ course.title }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ course.title }}</h5>
+                    <p class="card-text">{{ course.description }}</p>
+                    <a href="{% url 'course' id=course.id %}" class="btn btn-primary">Details</a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

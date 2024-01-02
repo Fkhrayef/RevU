@@ -1,0 +1,20 @@
+{% extends "revuCMS/layout.html" %}
+
+{% block body %}
+    <h2>Course: {{ course.title }}</h2>
+    <img src="{{ course.imageUrl }}" alt="{{ course.title }}" height="400px">
+    <p>{{ course.description }}</p>
+    {% if user.is_authenticated %}
+        {% if isEnrolled %}
+            <form action="{% url 'disenroll' id=course.id %}" method="POST">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Disenroll !</button>
+            </form>
+        {% else %}
+        <form action="{% url 'enroll' id=course.id %}" method="POST">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-success">Enroll !</button>
+        </form>
+        {% endif %}
+    {% endif %}
+{% endblock %}

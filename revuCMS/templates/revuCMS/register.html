@@ -1,0 +1,34 @@
+{% extends "revuCMS/layout.html" %}
+
+{% block body %}
+
+    <h2>Register</h2>
+
+    {% if message %}
+        <div>{{ message }}</div>
+    {% endif %}
+
+    <form action="{% url 'register' %}" method="post">
+        {% csrf_token %}
+        <div class="form-floating mb-3">
+            <input type="text" name="username" class="form-control" id="username" placeholder="Username">
+            <label for="username">Username</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input type="email" name="email" class="form-control" id="email" placeholder="Email Address">
+            <label for="email">Email Address</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input type="password" name="password" class="form-control" id="password" placeholder="Password">
+            <label for="password">Password</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input type="password" name="confirmation" class="form-control" id="confirmation" placeholder="Confirm Password">
+            <label for="confirmation">Confirm Password</label>
+        </div>
+        <input class="btn btn-primary" type="submit" value="Register">
+    </form>
+
+    Already have an account? <a href="{% url 'login' %}">Log In here.</a>
+
+{% endblock %}

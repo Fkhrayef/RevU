@@ -1,0 +1,31 @@
+{% extends "revuCMS/layout.html" %}
+
+{% block body %}
+    <h1 class="my-5 text-center">{{ course.title }}</h1>
+    {% for item  in lessons_with_videos %}
+        <div class="accordion w-75 mx-auto my-3" id="accordionPanelsStayOpenExample">
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
+                {{ item.lesson.title }}
+                </button>
+                </h2>
+                <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show">
+                    <div class="accordion-body">
+                        <ul class="list-group">
+                            {% for video in item.videos %}
+                            <li class="list-group-item">
+                                <a style="color:rgb(30,48,80); text-decoration: none;" href="{{ video.video }}">
+                                    <i class="fa-brands fa-youtube"></i> 
+                                    {{video.title}}
+                                </a>  
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+    
+{% endblock %}

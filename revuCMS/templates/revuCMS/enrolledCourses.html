@@ -1,0 +1,17 @@
+{% extends "revuCMS/layout.html" %}
+
+{% block body %}
+    <h2>Enrolled Courses</h2>
+    <div class="row mx-3">
+        {% for course in courses %}
+            <div class="card mx-3" style="width: 18rem;">
+                <img src="{{ course.imageUrl }}" class="card-img-top" alt="{{ course.title }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ course.title }}</h5>
+                    <p class="card-text">{{ course.description }}</p>
+                    <a href="{% url 'courseContent' id=course.id %}" class="btn btn-primary">Content</a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

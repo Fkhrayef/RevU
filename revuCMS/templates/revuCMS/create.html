@@ -1,0 +1,31 @@
+{% extends "revuCMS/layout.html" %}
+
+{% block body %}
+    <h2>Create a new Course</h2>
+
+    <form action="{% url 'create' %}" method="POST" class="my-3">
+        {% csrf_token %}
+        <div class="form-floating mb-3">
+            <input type="text" name="title" class="form-control" id="title" placeholder="Title">
+            <label for="title">Course Title</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input type="text" name="description" class="form-control" id="description" placeholder="Description">
+            <label for="description">Course Description</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input type="text" name="imageurl" class="form-control" id="imageurl" placeholder="imageUrl">
+            <label for="imageurl">Image URL</label>
+        </div>
+        <div class="form-group">
+            <label for="category">Select a category:</label>
+            <select name="category" class="form-select" aria-label="Default select example">
+                {% for category in categories %}
+                    <option value="{{ category }}">{{ category }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <button type="submit" class="btn btn-success">Create!</button>
+    </form>
+{% endblock %}
