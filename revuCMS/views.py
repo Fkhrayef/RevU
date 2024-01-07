@@ -4,7 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
-from .models import User, Category, Course, Lesson, Video
+from .models import User, Category, Course, Lesson, Video, Comment
 
 
 def index(request):
@@ -56,9 +56,11 @@ def createCourse(request):
 def course(request, id):
     courseData = Course.objects.get(pk=id)
     isEnrolled = request.user in courseData.enrollment.all()
+    allComments = Comment.objects.filter(course=courseData)
     return render(request, "revuCMS/course.html", {
         "course": courseData,
-        "isEnrolled": isEnrolled
+        "isEnrolled": isEnrolled,
+        "allComments": allComments
     })
 
 def search(request):
@@ -80,6 +82,18 @@ def disenroll(request, id):
     courseData = Course.objects.get(pk=id)
     currentUser = request.user
     courseData.enrollment.remove(currentUser)
+    return HttpResponseRedirect(reverse("course", args=(id, )))
+
+def addComment(request, id):
+    currentUser = request.user
+    courseData = Course.objects.get(pk=id)
+    message = request.POST["newComment"]
+    newComment = Comment(
+        user=currentUser,
+        course=courseData,
+        message=message
+    )
+    newComment.save()
     return HttpResponseRedirect(reverse("course", args=(id, )))
 
 def enrolledCourses(request):

@@ -17,4 +17,27 @@
         </form>
         {% endif %}
     {% endif %}
+    
+    <h2 class="my-3">Discussion Board</h2>
+    <br>
+    {% if user.is_authenticated %}
+        <form action="{% url 'addComment' id=course.id %}" method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+                <input type="text" name="newComment" placeholder="Type your message">
+                <button type="submit" class="btn btn-warning">Comment</button>
+            </div>
+        </form>
+    {% endif %}
+    <br>
+    <ul class="list-group">
+        {% for comment in allComments %}
+            <li class="list-group-item">
+                {{ comment.message }}
+                <br>
+                <p>commented by: <strong>{{ comment.user }}</strong></p>
+            </li>
+        {% endfor %}
+    </ul>
+    
 {% endblock %}

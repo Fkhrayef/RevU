@@ -38,3 +38,11 @@ class Video(models.Model):
 
     def __str__(self):
         return self.title
+    
+class Comment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True, related_name="userComment")
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, blank=True, null=True, related_name="courseComment")
+    message = models.CharField(max_length=200)
+
+    def __str__(self):
+        return f"{self.user} comment on {self.course}"
