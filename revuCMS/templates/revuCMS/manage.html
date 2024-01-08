@@ -1,0 +1,27 @@
+{% extends "revuCMS/layout.html" %}
+{% load static %}
+
+{% block body %}
+    <h2 class="mx-3">Manage Courses</h2>
+    <div class="row mx-3 my-3">
+        {% for course in courses %}
+            <div class="card mx-3" style="width: 18rem;">
+                <img src="{{ course.imageUrl }}" class="card-img-top" alt="{{ course.title }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ course.title }}</h5>
+                    <p class="card-text">{{ course.description }}</p>
+                    <a href="{% url 'course' id=course.id %}" class="btn btn-primary">Edit</a>
+                    <a href="{% url 'course' id=course.id %}" class="btn btn-danger">Delete</a>
+                </div>
+            </div>
+        {% endfor %}
+        <div class="card mx-3" style="width: 18rem;">
+            <img src="{% static 'revuCMS/addCourse.png' %}" alt="createCourse">
+            <div class="card-body">
+                <h5 class="card-title">Create a New Course</h5>
+                <p class="card-text">This feature allows you to easily add new courses to the adaptive learning platform.</p>
+                <a href="{% url 'create' %}" class="btn btn-warning">Create a new Course</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

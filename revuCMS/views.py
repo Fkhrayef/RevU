@@ -71,6 +71,12 @@ def search(request):
             "searchQuery": searchQuery,
             "courseSearch": courseSearch
         })
+    
+def manage(request):
+    activeCourses = Course.objects.filter(isActive=True)
+    return render(request, "revuCMS/manage.html", {
+        "courses": activeCourses
+    })
 
 def enroll(request, id):
     courseData = Course.objects.get(pk=id)
