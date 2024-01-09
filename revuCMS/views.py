@@ -83,6 +83,41 @@ def deleteCourse(request, id):
     courseData.delete()
     return HttpResponseRedirect(reverse(manage))
 
+def editCourse(request, id):
+    courseData = Course.objects.get(pk=id)
+    allCategories = Category.objects.all()
+    return render(request, 'revuCMS/editCourse.html', {
+        "course": courseData,
+        "categories": allCategories
+    })
+
+def saveEditCourse(request):
+    if request.method =='POST':
+        # Getting the Course by id
+        id = request.POST["id"]
+        courseData = Course.objects.get(pk=id)
+        
+        # Getting the new edited values
+        title = request.POST["title"]
+        description = request.POST["description"]
+        imageUrl = request.POST["imageurl"]
+        category = request.POST["category"]
+        
+        # Converting category to its object instance
+        categoryData = Category.objects.get(categoryName=category)
+
+        # Updating the old values
+        courseData.title=title
+        courseData.description=description
+        courseData.imageUrl=imageUrl
+        courseData.category=categoryData
+
+        # Saving the new values
+        courseData.save()
+
+        # Redirecting to the Manage Courses page
+        return HttpResponseRedirect(reverse(manage))
+
 def enroll(request, id):
     courseData = Course.objects.get(pk=id)
     currentUser = request.user

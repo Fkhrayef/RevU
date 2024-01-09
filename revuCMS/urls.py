@@ -19,4 +19,6 @@ urlpatterns = [
     path("addComment/<int:id>", views.addComment, name="addComment"),
     path("manage", views.manage, name="manage"),
     path("deleteCourse/<int:id>", views.deleteCourse, name="deleteCourse"),
+    path("editCourse/<int:id>", views.editCourse, name="editCourse"),
+    path("saveEditCourse", views.saveEditCourse, name="saveEditCourse"),
 ]
