@@ -1,7 +1,7 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.urls import reverse
 
 from .models import User, Category, Course, Lesson, Video, Comment
@@ -25,6 +25,31 @@ def displayCategory(request):
             "courses": activeCourses,
             "categories": allCategories
         })
+
+def course(request, id):
+    courseData = Course.objects.get(pk=id)
+    isEnrolled = request.user in courseData.enrollment.all()
+    allComments = Comment.objects.filter(course=courseData)
+    return render(request, "revuCMS/course.html", {
+        "course": courseData,
+        "isEnrolled": isEnrolled,
+        "allComments": allComments
+    })
+
+def search(request):
+    if request.method == "POST":
+        searchQuery = request.POST["q"]
+        courseSearch = Course.objects.filter(title__icontains=searchQuery)
+        return render(request, "revuCMS/search.html", {
+            "searchQuery": searchQuery,
+            "courseSearch": courseSearch
+        })
+
+def manage(request):
+    activeCourses = Course.objects.filter(isActive=True)
+    return render(request, "revuCMS/manage.html", {
+        "courses": activeCourses
+    })
 
 def createCourse(request):
     if request.method == "GET":
@@ -51,32 +76,12 @@ def createCourse(request):
             owner=currentUser
         )
         newCourse.save()
-        return HttpResponseRedirect(reverse(index))
+        return HttpResponseRedirect(reverse(manage))
 
-def course(request, id):
+def deleteCourse(request, id):
     courseData = Course.objects.get(pk=id)
-    isEnrolled = request.user in courseData.enrollment.all()
-    allComments = Comment.objects.filter(course=courseData)
-    return render(request, "revuCMS/course.html", {
-        "course": courseData,
-        "isEnrolled": isEnrolled,
-        "allComments": allComments
-    })
-
-def search(request):
-    if request.method == "POST":
-        searchQuery = request.POST["q"]
-        courseSearch = Course.objects.filter(title__icontains=searchQuery)
-        return render(request, "revuCMS/search.html", {
-            "searchQuery": searchQuery,
-            "courseSearch": courseSearch
-        })
-    
-def manage(request):
-    activeCourses = Course.objects.filter(isActive=True)
-    return render(request, "revuCMS/manage.html", {
-        "courses": activeCourses
-    })
+    courseData.delete()
+    return HttpResponseRedirect(reverse(manage))
 
 def enroll(request, id):
     courseData = Course.objects.get(pk=id)

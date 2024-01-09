@@ -18,4 +18,5 @@ urlpatterns = [
     path("search", views.search, name="search"),
     path("addComment/<int:id>", views.addComment, name="addComment"),
     path("manage", views.manage, name="manage"),
+    path("deleteCourse/<int:id>", views.deleteCourse, name="deleteCourse"),
 ]
