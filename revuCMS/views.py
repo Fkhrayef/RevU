@@ -84,15 +84,14 @@ def deleteCourse(request, id):
     return HttpResponseRedirect(reverse(manage))
 
 def editCourse(request, id):
-    courseData = Course.objects.get(pk=id)
-    allCategories = Category.objects.all()
-    return render(request, 'revuCMS/editCourse.html', {
-        "course": courseData,
-        "categories": allCategories
-    })
-
-def saveEditCourse(request):
-    if request.method =='POST':
+    if request.method == "GET":
+        courseData = Course.objects.get(pk=id)
+        allCategories = Category.objects.all()
+        return render(request, 'revuCMS/editCourse.html', {
+            "course": courseData,
+            "categories": allCategories
+        })
+    else:
         # Getting the Course by id
         id = request.POST["id"]
         courseData = Course.objects.get(pk=id)
@@ -116,7 +115,7 @@ def saveEditCourse(request):
         courseData.save()
 
         # Redirecting to the Manage Courses page
-        return HttpResponseRedirect(reverse(manage))
+        return HttpResponseRedirect(reverse("editCourse", args=(id, )))
 
 def enroll(request, id):
     courseData = Course.objects.get(pk=id)
@@ -163,6 +162,32 @@ def courseContent(request, id):
         "course": courseData,
         'lessons_with_videos': lesson_data,
     })
+
+def profile(request):
+    currentUser = request.user
+    if request.method == "GET":
+        return render(request, 'revuCMS/profile.html', {
+            "user": currentUser
+        })
+    else:
+        # Getting the new edited values
+        fname = request.POST["fname"]
+        lname = request.POST["lname"]
+        username = request.POST["username"]
+        email = request.POST["email"]
+
+        # Updating the old values
+        currentUser.first_name=fname
+        currentUser.last_name=lname
+        currentUser.username=username
+        currentUser.email=email
+
+        # Saving the new values
+        currentUser.save()
+
+        # Redirecting to the Manage Courses page
+        return HttpResponseRedirect(reverse(profile))
+
 
 def login_view(request):
     if request.method == "POST":

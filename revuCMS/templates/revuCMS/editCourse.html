@@ -2,7 +2,7 @@
 
 {% block body %}
     <h2>Edit Course</h2>
-    <form action="{% url 'saveEditCourse' %}" method="POST" class="my-3">
+    <form action="{% url 'editCourse' id=course.id %}" method="POST" class="my-3">
         {% csrf_token %}
         <input type="hidden" name="id" value="{{ course.id }}">
         <div class="form-floating mb-3">

@@ -20,5 +20,5 @@ urlpatterns = [
     path("manage", views.manage, name="manage"),
     path("deleteCourse/<int:id>", views.deleteCourse, name="deleteCourse"),
     path("editCourse/<int:id>", views.editCourse, name="editCourse"),
-    path("saveEditCourse", views.saveEditCourse, name="saveEditCourse"),
+    path("profile", views.profile, name="profile"),
 ]
