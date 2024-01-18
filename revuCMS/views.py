@@ -163,6 +163,69 @@ def courseContent(request, id):
         'lessons_with_videos': lesson_data,
     })
 
+def addLesson(request, id):
+    # Get the Lesson
+    courseData = Course.objects.get(id=id)
+
+    if request.method == "GET":
+        return render(request, "revuCMS/addLesson.html",{
+            'course': courseData
+        })
+    else:
+        # Get the data from the form
+        title = request.POST["title"]
+        # Create a new Lesson object
+        newLesson = Lesson(
+            title=title,
+            course=courseData
+        )
+        newLesson.save()
+        return HttpResponseRedirect(reverse("courseContent", args=(id, )))
+
+def deleteLesson(request, id):
+    # Get the Lesson
+    lessonData = Lesson.objects.get(pk=id)
+    # Get the course to redirect
+    courseData = lessonData.course
+    # Delete the object
+    lessonData.delete()
+    return HttpResponseRedirect(reverse("courseContent", args=(courseData.id, )))
+
+def addVid(request, id):
+    # Get the Lesson
+    lessonData = Lesson.objects.get(id=id)
+    # Get the Course
+    courseData = lessonData.course
+
+    if request.method == "GET":
+        return render(request, "revuCMS/addVid.html",{
+            'lesson': lessonData
+        })
+    else:
+        # Get the data from the form
+        title = request.POST["title"]
+        vidurl = request.POST["vidurl"]
+        lesson = lessonData
+        # Create a new Video object
+        newVid = Video(
+            title=title,
+            video=vidurl,
+            lesson=lesson,
+        )
+        newVid.save()
+        return HttpResponseRedirect(reverse("courseContent", args=(courseData.id, )))
+    
+def deleteVid(request, id):
+    # Get the Video
+    vidData = Video.objects.get(pk=id)
+    # Get the course to redirect
+    lessonData = vidData.lesson
+    courseData = lessonData.course
+    # Delete the object
+    vidData.delete()
+    return HttpResponseRedirect(reverse("courseContent", args=(courseData.id, )))
+
+
 def profile(request):
     currentUser = request.user
     if request.method == "GET":

@@ -1,0 +1,14 @@
+{% extends "revuCMS/layout.html" %}
+
+{% block body %}
+    <h2>Add a new Lesson</h2>
+
+    <form action="{% url 'addLesson' id=course.id %}" method="POST" class="my-3">
+        {% csrf_token %}
+        <div class="form-floating mb-3">
+            <input type="text" name="title" class="form-control" id="title" placeholder="Title">
+            <label for="title">Lesson Title</label>
+        </div>
+        <button type="submit" class="btn btn-success">Add!</button>
+    </form>
+{% endblock %}

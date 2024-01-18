@@ -14,18 +14,46 @@
                     <div class="accordion-body">
                         <ul class="list-group">
                             {% for video in item.videos %}
-                            <li class="list-group-item">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
                                 <a style="color:rgb(30,48,80); text-decoration: none;" href="{{ video.video }}">
                                     <i class="fa-brands fa-youtube"></i> 
                                     {{video.title}}
-                                </a>  
+                                </a>
+                                {% if user.is_authenticated %}
+                                <div class="ml-auto">
+                                    <a style="color:rgb(30,48,80); text-decoration: none;" href="{% url 'deleteVid' id=video.id %}">
+                                        <i class="fa-solid fa-trash" style="color: #ff0000; display: inline-block;"></i>
+                                    </a>
+                                </div>
+                                {% endif %}
                             </li>
                             {% endfor %}
+                            <li class="list-group-item">
+                                <a style="color:rgb(30,48,80); text-decoration: none;" href="{% url 'addVid' id=item.lesson.id %}">
+                                    <i class="fa-solid fa-plus"></i> 
+                                    Add a new Video
+                                </a>
+                            </li>
                         </ul>
                     </div>
                 </div>
+                <div class="d-flex justify-content-center align-items-center">
+                        <a class="btn btn-danger my-1" href="{% url 'deleteLesson' id=item.lesson.id %}" >Delete Lesson</a>
+                </div>
+                
             </div>
         </div>
     {% endfor %}
-    
+    <div class="accordion w-75 mx-auto my-3" id="accordionPanelsStayOpenExample">
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+            <div class="accordion-button" type="text">
+                <a style="color:rgb(30,48,80); text-decoration: none;" href="{% url 'addLesson' id=course.id %}">
+                    <i class="fa-solid fa-plus"></i> 
+                    Add a new Lesson
+                </a>
+            </div>
+            </h2>
+        </div>
+    </div>
 {% endblock %}
