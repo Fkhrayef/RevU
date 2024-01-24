@@ -191,6 +191,37 @@ def deleteLesson(request, id):
     lessonData.delete()
     return HttpResponseRedirect(reverse("courseContent", args=(courseData.id, )))
 
+def editLesson(request, id):
+    # Get the Lesson
+    lessonData = Lesson.objects.get(pk=id)
+    # Get the course to redirect
+    courseData = lessonData.course
+    # Get all courses
+    allCourses = Course.objects.all()
+
+    if request.method == "GET":
+        return render(request, 'revuCMS/editLesson.html', {
+            "lesson": lessonData,
+            "courses": allCourses
+        })
+    else:
+        # Getting the new edited values
+        title = request.POST["title"]
+        # course = request.POST["course"] (This section is to change the course of the lesson)
+        
+        # Converting Course to its object instance
+        # courseData = Course.objects.get(title=course) (This section is to change the course of the lesson)
+
+        # Updating the old values
+        lessonData.title=title
+        # lessonData.course=courseData (This section is to change the course of the lesson)
+
+        # Saving the new values
+        lessonData.save()
+
+        # Redirecting to the Course Content page
+        return HttpResponseRedirect(reverse("courseContent", args=(courseData.id, )))
+
 def addVid(request, id):
     # Get the Lesson
     lessonData = Lesson.objects.get(id=id)
@@ -225,6 +256,36 @@ def deleteVid(request, id):
     vidData.delete()
     return HttpResponseRedirect(reverse("courseContent", args=(courseData.id, )))
 
+def editVid(request, id):
+    # Get the Video, Lesson and Course
+    vidData = Video.objects.get(pk=id)
+    lessonData = vidData.lesson
+    courseData = lessonData.course
+    # Get all the lessons of the course
+    allLessons = Lesson.objects.filter(course=courseData.id)
+
+    if request.method == "GET":
+        return render(request, 'revuCMS/editVid.html', {
+            "video": vidData,
+            "lessons": allLessons
+        })
+    else:
+        # Getting the new edited values
+        title = request.POST["title"]
+        lesson = request.POST["lesson"]
+        
+        # Converting lesson to its object instance
+        lessonData = Lesson.objects.get(title=lesson)
+
+        # Updating the old values
+        vidData.title=title
+        vidData.lesson=lessonData
+
+        # Saving the new values
+        vidData.save()
+
+        # Redirecting to the Course Content page
+        return HttpResponseRedirect(reverse("courseContent", args=(courseData.id, )))
 
 def profile(request):
     currentUser = request.user
