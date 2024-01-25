@@ -19,9 +19,17 @@
                                     <i class="fa-brands fa-youtube"></i> 
                                     {{video.title}}
                                 </a>
+                                {% if not user.is_superuser %}
+                                <div class="ml-auto d-flex">
+                                    <form action="{% url 'mark_videos_completed' id=video.id %}" method="POST">
+                                        {% csrf_token %}
+                                        <input class="form-check-input my-n2" type="checkbox" id="isCompleted {{video.id}}" name="isCompleted" {% if video.is_completed %} checked {% endif %} onchange="this.form.submit()">
+                                    </form>
+                                </div>
+                                {% endif %}
                                 {% if user.is_superuser %}
                                 <div class="ml-auto d-flex">
-                                    <a style="color:rgb(30,48,80); text-decoration: none; margin-right: 10px;" href="{% url 'editVid' id=video.id %}">
+                                    <a style="color:rgb(30,48,80); text-decoration: none; margin-right: 10px; margin-left: 10px;" href="{% url 'editVid' id=video.id %}">
                                         <i class="fa-regular fa-pen-to-square" style="color: #FFD43B;"></i>
                                     </a>
                                     <a style="color:rgb(30,48,80); text-decoration: none;" href="{% url 'deleteVid' id=video.id %}">

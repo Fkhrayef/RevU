@@ -4,7 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse
 
-from .models import User, Category, Course, Lesson, Video, Comment
+from .models import User, Category, Course, Lesson, Video, Comment, UserProgress
 
 
 def index(request):
@@ -158,10 +158,31 @@ def courseContent(request, id):
         videos = Video.objects.filter(lesson=lesson)
         lesson_data.append({'lesson': lesson, 'videos': videos})
 
+
+    # Get UserProgress information for each video
+    currentUser = request.user
+    for item in lesson_data:
+        for video in item['videos']:
+            user_progress = UserProgress.objects.filter(user=currentUser, video=video).first()
+            video.is_completed = user_progress.is_completed if user_progress else False
+
     return render(request, 'revuCMS/courseContent.html', {
         "course": courseData,
         'lessons_with_videos': lesson_data,
     })
+
+def mark_videos_completed(request, id):
+    currentUser = request.user
+    video = Video.objects.get(pk=id)
+    if request.method == "POST":
+
+        userProgress, created = UserProgress.objects.get_or_create(user=currentUser, video=video)
+        isCompleted = request.POST.get('isCompleted', False) == 'on'
+        userProgress.is_completed = isCompleted
+        userProgress.save()
+
+        return HttpResponseRedirect(reverse("courseContent", args=(video.lesson.course.id, )))
+
 
 def addLesson(request, id):
     # Get the Lesson

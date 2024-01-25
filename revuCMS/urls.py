@@ -14,7 +14,7 @@ urlpatterns = [
     path("disenroll/<int:id>", views.disenroll, name="disenroll"),
     path("enroll/<int:id>", views.enroll, name="enroll"),
     path("enrolledCourses/", views.enrolledCourses, name="enrolledCourses"),
-    path("enrolledCourses/courseContent/<int:id>", views.courseContent, name="courseContent"),
+    path("courseContent/<int:id>", views.courseContent, name="courseContent"),
     path("search", views.search, name="search"),
     path("addComment/<int:id>", views.addComment, name="addComment"),
     path("manage", views.manage, name="manage"),
@@ -27,4 +27,5 @@ urlpatterns = [
     path("addVid/<int:id>", views.addVid, name="addVid"),
     path("deleteVid/<int:id>", views.deleteVid, name="deleteVid"),
     path("editVid/<int:id>", views.editVid, name="editVid"),
+    path('mark_videos_completed/<int:id>', views.mark_videos_completed, name='mark_videos_completed'),
 ]

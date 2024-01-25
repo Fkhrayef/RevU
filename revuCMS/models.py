@@ -30,6 +30,9 @@ class Lesson(models.Model):
 
     def __str__(self):
         return self.title
+    
+    def is_completed(self, user):
+        return all(video.user_progress.filter(user=user, is_completed=True).exists() for video in self.videos.all())
 
 class Video(models.Model):
     title = models.CharField(max_length=100)
@@ -39,6 +42,14 @@ class Video(models.Model):
     def __str__(self):
         return self.title
     
+class UserProgress(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True, related_name='userProgress')
+    video = models.ForeignKey(Video, on_delete=models.CASCADE, blank=True, null=True, related_name='videoProgress')
+    is_completed = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.video.title} - Completed: {self.is_completed}"
+
 class Comment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True, related_name="userComment")
     course = models.ForeignKey(Course, on_delete=models.CASCADE, blank=True, null=True, related_name="courseComment")
