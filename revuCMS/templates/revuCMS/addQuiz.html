@@ -1,0 +1,37 @@
+{% extends "revuCMS/layout.html" %}
+
+{% block title %}Add Quiz{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h2>Add Quiz</h2>
+        <form method="POST" action="{% url 'addQuiz' id=lesson.id %}">
+            {% csrf_token %}
+            <div class="form-floating mb-3">
+                <input type="text" name="quizTitle" class="form-control" id="quizTitle" placeholder="quizTitle">
+                <label for="quizTitle">Quiz Title</label>
+            </div>
+            <div class="form-floating mb-3">
+                <input type="text" name="quizNumOfQuestions" class="form-control" id="quizNumOfQuestions" placeholder="quizNumOfQuestions">
+                <label for="quizNumOfQuestions">Number of Questions</label>
+            </div>
+            <div class="form-floating mb-3">
+                <input type="text" name="quizDuration" class="form-control" id="quizDuration" placeholder="quizDuration">
+                <label for="quizDuration">Duration (minutes)</label>
+            </div>
+            <div class="form-floating mb-3">
+                <input type="text" name="scoreToPass" class="form-control" id="scoreToPass" placeholder="scoreToPass">
+                <label for="scoreToPass">Required Score to Pass</label>
+            </div>
+            <div class="form-group">
+                <label for="difficulty">Select a difficulty:</label>
+                <select name="difficulty" class="form-select" aria-label="Default select example">
+                    {% for difficulty in difficulties %}
+                        <option value="{{ difficulty }}">{{ difficulty }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Add Quiz</button>
+        </form>
+    </div>
+{% endblock %}

@@ -57,3 +57,48 @@ class Comment(models.Model):
 
     def __str__(self):
         return f"{self.user} comment on {self.course}"
+
+# Quiz
+class Difficulty(models.Model):
+    difficulty = models.CharField(max_length=6)
+
+    def __str__(self):
+        return self.difficulty
+
+class Quiz(models.Model):
+    title = models.CharField(max_length=100)
+    number_of_questions = models.IntegerField(blank=True, null=True)
+    duration = models.PositiveIntegerField(help_text="duration of the quiz in minutes")
+    required_score_to_pass = models.IntegerField(blank=True, null=True ,help_text="required score in %")
+    difficulty = models.CharField(max_length=6, blank=True, null=True)
+    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, blank=True, null=True, related_name='quizLesson')
+    
+
+    def __str__(self):
+        return self.title
+    
+    def get_question(self):
+        return self.question_set.all()
+
+class Question(models.Model):
+    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
+    question_text = models.CharField(max_length=200)
+    
+    def __str__(self):
+        return self.question_text
+
+class AnswerChoice(models.Model):
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    answer_text = models.CharField(max_length=200)
+    is_correct = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Question: {self.question.question_text} - Answer: {self.answer_text} Correct Answer: {self.is_correct}"
+
+class UserResponse(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    selected_choice = models.ForeignKey(AnswerChoice, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.user.username} "

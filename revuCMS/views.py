@@ -4,7 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse
 
-from .models import User, Category, Course, Lesson, Video, Comment, UserProgress
+from .models import User, Category, Course, Lesson, Video, Comment, UserProgress, Difficulty, Quiz, Question, AnswerChoice, UserResponse
 
 
 def index(request):
@@ -156,7 +156,8 @@ def courseContent(request, id):
 
     for lesson in lessons:
         videos = Video.objects.filter(lesson=lesson)
-        lesson_data.append({'lesson': lesson, 'videos': videos})
+        quizzes = Quiz.objects.filter(lesson=lesson)
+        lesson_data.append({'lesson': lesson, 'videos': videos, 'quizzes': quizzes})
 
 
     # Get UserProgress information for each video
@@ -333,6 +334,178 @@ def profile(request):
         # Redirecting to the Manage Courses page
         return HttpResponseRedirect(reverse(profile))
 
+def addQuiz(request, id):
+    # Get the Lesson
+    lessonData = Lesson.objects.get(id=id)
+    # Get the Course
+    courseData = lessonData.course
+
+    if request.method == "GET":
+
+        difficulties = Difficulty.objects.all()
+        return render(request, 'revuCMS/addQuiz.html', {
+            "difficulties": difficulties,
+            'lesson': lessonData
+        })
+    else:
+        # Get the data from the form
+        title = request.POST["quizTitle"]
+        numOfQuestions = request.POST["quizNumOfQuestions"]
+        duration = request.POST["quizDuration"]
+        scoreToPass = request.POST["scoreToPass"]
+        difficulty = request.POST["difficulty"]
+
+        # Converting difficulty to its object instance
+        difficultyData = Difficulty.objects.get(difficulty=difficulty)
+
+        # Create a new Video object
+        newQuiz = Quiz(
+            title=title,
+            number_of_questions=numOfQuestions,
+            duration=duration,
+            required_score_to_pass = scoreToPass,
+            difficulty = difficultyData,
+            lesson = lessonData
+        )
+        newQuiz.save()
+        return HttpResponseRedirect(reverse("courseContent", args=(courseData.id, )))
+
+def editQuiz(request, id):
+    # Get the Quiz, Lesson and Course
+    quizData = Quiz.objects.get(pk=id)
+    lessonData = quizData.lesson
+    courseData = lessonData.course
+    # Get all the lessons of the course
+    allLessons = Lesson.objects.filter(course=courseData.id)
+    # Get all difficulties
+    difficulties = Difficulty.objects.all()
+
+    if request.method == "GET":
+        return render(request, 'revuCMS/editQuiz.html', {
+            "quiz": quizData,
+            "lessons": allLessons,
+            "difficulties": difficulties
+        })
+    else:
+        # Getting the new edited values
+        title = request.POST["title"]
+        numOfQuestions = request.POST["quizNumOfQuestions"]
+        duration = request.POST["quizDuration"]
+        scoreToPass = request.POST["scoreToPass"]
+        difficulty = request.POST["difficulty"]
+        lesson = request.POST["lesson"]
+        
+        # Converting lesson to its object instance
+        lessonData = Lesson.objects.get(title=lesson)
+
+        # Updating the old values
+        quizData.title=title
+        quizData.number_of_questions=numOfQuestions
+        quizData.duration=duration
+        quizData.required_score_to_pass=scoreToPass
+        quizData.difficulty=difficulty
+        quizData.lesson=lessonData
+
+        # Saving the new values
+        quizData.save()
+
+        # Redirecting to the Course Content page
+        return HttpResponseRedirect(reverse("courseContent", args=(courseData.id, )))
+
+def deleteQuiz(request, id):
+    # Get the Quiz
+    quizData = Quiz.objects.get(pk=id)
+    # Get the course to redirect
+    lessonData = quizData.lesson
+    courseData = lessonData.course
+    # Delete the object
+    quizData.delete()
+    return HttpResponseRedirect(reverse("courseContent", args=(courseData.id, )))
+
+def manageQuiz(request, id):
+    quizData = Quiz.objects.get(pk=id)
+    questions = Question.objects.filter(quiz=quizData)
+    return render(request, "revuCMS/manageQuiz.html", {
+        "quiz": quizData,
+        "questions": questions
+    })
+
+def addQuestion(request, id):
+    # Get the Quiz
+    quizData = Quiz.objects.get(id=id)
+
+    if request.method == "GET":
+        return render(request, "revuCMS/addQuestion.html",{
+            'quiz': quizData
+        })
+    else:
+        # Get the Question from the form
+        question_text = request.POST["question_text"]
+        
+        # Create a new Question object
+        newQuestion = Question(
+            question_text=question_text,
+            quiz = quizData
+        )
+        newQuestion.save()
+
+        # Get the Answers from the form
+        correct_answer = int(request.POST["correct_answer"])
+
+        for i in range(1, 5):
+            answer_text = request.POST[f"answer{i}"]
+            is_correct = (i == correct_answer)
+
+            newAnswer = AnswerChoice(
+                question=newQuestion,
+                answer_text=answer_text,
+                is_correct=is_correct
+            )
+            newAnswer.save()
+
+        return HttpResponseRedirect(reverse("manageQuiz", args=(id, )))
+
+def editQuestion(request, id):
+    questionData = Question.objects.get(pk=id)
+    answers = questionData.answerchoice_set.all()
+
+    if request.method == "GET":
+        return render(request, "revuCMS/editQuestion.html",{
+            "question": questionData,
+            "answers": answers
+        })
+    else:
+        # Get the Question from the form
+        question_text = request.POST["question_text"]
+        questionData.question_text = question_text
+        questionData.save()
+
+        # Get the Answers from the form
+        for i in range(1, 5):
+            answer_text = request.POST.get(f"answer{i}")
+    
+            # Retrieve the answer from the database based on some identifier, e.g., answer ID
+            answer_id = request.POST.get(f"answer_id_{i}")
+            answer = AnswerChoice.objects.get(id=answer_id)
+
+            # Check if the current answer ID matches the submitted correct_answer value
+            is_correct = str(answer.id) == request.POST.get("correct_answer")
+
+            # Update the answer with the new values
+            answer.answer_text = answer_text
+            answer.is_correct = is_correct
+            answer.save()
+
+        return HttpResponseRedirect(reverse("manageQuiz", args=(questionData.quiz.id, )))
+
+def deleteQuestion(request, id):
+    # Get the Question
+    questionData = Question.objects.get(pk=id)
+    # Get the Quiz to redirect
+    quizData = questionData.quiz
+    # Delete the object
+    questionData.delete()
+    return HttpResponseRedirect(reverse("manageQuiz", args=(quizData.id, )))
 
 def login_view(request):
     if request.method == "POST":

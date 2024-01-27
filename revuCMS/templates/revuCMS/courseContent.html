@@ -39,11 +39,35 @@
                                 {% endif %}
                             </li>
                             {% endfor %}
+                            {% for quiz in item.quizzes %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <a style="color:rgb(30,48,80); text-decoration: none;" href="google.com">
+                                    <i class="fa-solid fa-sheet-plastic"></i>
+                                    {{quiz.title}}
+                                </a>
+                                {% if user.is_superuser %}
+                                <div class="ml-auto d-flex">
+                                    <a style="color:rgb(30,48,80); text-decoration: none; margin-right: 10px; margin-left: 10px;" href="{% url 'editQuiz' id=quiz.id %}">
+                                        <i class="fa-regular fa-pen-to-square" style="color: #FFD43B;"></i>
+                                    </a>
+                                    <a style="color:rgb(30,48,80); text-decoration: none;" href="{% url 'deleteQuiz' id=quiz.id %}">
+                                        <i class="fa-solid fa-trash" style="color: #ff0000; display: inline-block;"></i>
+                                    </a>
+                                </div>
+                                {% endif %}
+                            </li>
+                            {% endfor %}
                             {% if user.is_superuser %}
                             <li class="list-group-item">
                                 <a style="color:rgb(30,48,80); text-decoration: none;" href="{% url 'addVid' id=item.lesson.id %}">
                                     <i class="fa-solid fa-plus"></i> 
-                                    Add a new Video
+                                    Add Video
+                                </a>
+                            </li>
+                            <li class="list-group-item">
+                                <a style="color:rgb(30,48,80); text-decoration: none;" href="{% url 'addQuiz' id=item.lesson.id %}">
+                                    <i class="fa-solid fa-plus"></i> 
+                                    Add Quiz
                                 </a>
                             </li>
                             {% endif %}

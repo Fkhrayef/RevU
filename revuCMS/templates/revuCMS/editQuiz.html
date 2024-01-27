@@ -1,0 +1,45 @@
+{% extends "revuCMS/layout.html" %}
+
+{% block body %}
+    <h2>Edit Video</h2>
+    <form action="{% url 'editQuiz' id=quiz.id %}" method="POST" class="my-3">
+        {% csrf_token %}
+        <input type="hidden" name="id" value="{{ quiz.id }}">
+        <div class="form-floating mb-3">
+            <input type="text" name="title" class="form-control" id="title" placeholder="Title" value="{{ quiz.title }}">
+            <label for="title">Quiz Title</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input type="text" name="quizNumOfQuestions" class="form-control" id="quizNumOfQuestions" placeholder="quizNumOfQuestions" value="{{ quiz.number_of_questions }}">
+            <label for="quizNumOfQuestions">Number of Questions</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input type="text" name="quizDuration" class="form-control" id="quizDuration" placeholder="quizDuration" value="{{ quiz.duration }}">
+            <label for="quizDuration">Duration (minutes)</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input type="text" name="scoreToPass" class="form-control" id="scoreToPass" placeholder="scoreToPass" value="{{ quiz.required_score_to_pass }}">
+            <label for="scoreToPass">Required Score to Pass</label>
+        </div>
+        <div class="form-group my-3">
+            <label for="difficulty">Select a difficulty:</label>
+            <select name="difficulty" class="form-select" aria-label="Default select example">
+                <option value="{{ quiz.difficulty }}" selected hidden >{{ quiz.difficulty }}</option>
+                {% for difficulty in difficulties %}
+                    <option value="{{ difficulty }}">{{ difficulty }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group my-3">
+            <label for="lesson">Select a lesson:</label>
+            <select name="lesson" class="form-select" aria-label="Default select example">
+                <option value="{{ quiz.lesson }}" selected hidden >{{ quiz.lesson }}</option>
+                {% for lesson in lessons %}
+                    <option value="{{ lesson.title }}">{{ lesson }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <a type="button" class="btn btn-warning" href="{% url 'manageQuiz' id=quiz.id %}">Edit Questions !</a>
+        <button type="submit" class="btn btn-warning">Edit !</button>
+    </form>
+{% endblock %}

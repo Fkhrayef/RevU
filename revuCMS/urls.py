@@ -28,4 +28,11 @@ urlpatterns = [
     path("deleteVid/<int:id>", views.deleteVid, name="deleteVid"),
     path("editVid/<int:id>", views.editVid, name="editVid"),
     path('mark_videos_completed/<int:id>', views.mark_videos_completed, name='mark_videos_completed'),
+    path('addQuiz/<int:id>', views.addQuiz, name='addQuiz'),
+    path('editQuiz/<int:id>', views.editQuiz, name='editQuiz'),
+    path('deleteQuiz/<int:id>', views.deleteQuiz, name='deleteQuiz'),
+    path('manageQuiz/<int:id>', views.manageQuiz, name='manageQuiz'),
+    path('addQuestion/<int:id>', views.addQuestion, name='addQuestion'),
+    path('deleteQuestion/<int:id>', views.deleteQuestion, name='deleteQuestion'),
+    path('editQuestion/<int:id>', views.editQuestion, name='editQuestion'),
 ]

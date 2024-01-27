@@ -1,0 +1,42 @@
+{% extends "revuCMS/layout.html" %}
+
+{% block body %}
+    <h4>Add a new Question</h4>
+
+    <form action="{% url 'addQuestion' id=quiz.id %}" method="POST" class="my-3">
+        {% csrf_token %}
+        <div class="card my-3">
+            <div class="form-floating mb-3">
+                <input type="text" name="question_text" class="form-control" id="question_text" placeholder="question_text">
+                <label for="question_text">Type your Question</label>
+            </div>
+            <div class="card-body">
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="correct_answer" id="answer1" value="1">
+                    <label class="form-check-label" for="answer1">
+                        <input type="text" name="answer1" class="form-control" placeholder="Answer 1">
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="correct_answer" id="answer2" value="2">
+                    <label class="form-check-label" for="answer2">
+                        <input type="text" name="answer2" class="form-control" placeholder="Answer 2">
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="correct_answer" id="answer3" value="3">
+                    <label class="form-check-label" for="answer3">
+                        <input type="text" name="answer3" class="form-control" placeholder="Answer 3">
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="correct_answer" id="answer4" value="4">
+                    <label class="form-check-label" for="answer4">
+                        <input type="text" name="answer4" class="form-control" placeholder="Answer 4">
+                    </label>
+                </div>
+                <button type="submit" class="btn btn-success my-3 mx-1">Add Question!</button>
+            </div>
+        </div>
+    </form>
+{% endblock %}
