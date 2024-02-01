@@ -2,6 +2,8 @@
 
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Fkhrayef_RevU&metric=alert_status&branch=master)](https://sonarcloud.io/summary/new_code?id=Fkhrayef_RevU)
 
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=Fkhrayef_RevU&metric=bugs&branch=master)](https://sonarcloud.io/summary/new_code?id=Fkhrayef_RevU)
+
 ## Overview
 
 RevU is a learning management system designed for adaptive learning platforms. It leverages advanced technology to tailor educational experiences to the individual needs of each learner.
