@@ -1,10 +1,10 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
-
-from .models import User, Category, Course, Lesson, Video, Comment, UserProgress, Difficulty, Quiz, Question, AnswerChoice, UserResponse
+from datetime import datetime, timedelta
+from .models import User, Category, Course, Lesson, Video, Comment, UserProgress, Difficulty, Quiz, Question, AnswerChoice, UserResponse, QuizAttempt
 
 
 def index(request):
@@ -93,8 +93,8 @@ def editCourse(request, id):
         })
     else:
         # Getting the Course by id
-        id = request.POST["id"]
-        courseData = Course.objects.get(pk=id)
+        courseId = request.POST["id"]
+        courseData = Course.objects.get(pk=courseId)
         
         # Getting the new edited values
         title = request.POST["title"]
@@ -333,6 +333,126 @@ def profile(request):
 
         # Redirecting to the Manage Courses page
         return HttpResponseRedirect(reverse(profile))
+
+def quizInfo(request, id):
+    quizData = Quiz.objects.get(pk=id)
+    return render(request, 'revuCMS/quizInfo.html', {
+            "quiz": quizData
+        })
+
+def startQuiz(request, id):
+    quizData = Quiz.objects.get(pk=id)
+
+    # Check if the user already has an active quiz attempt for this quiz
+    active_attempt = QuizAttempt.objects.filter(
+        user=request.user,
+        quiz=quizData,
+        end_time__gte=datetime.now(),
+        start_time__lte=datetime.now()
+    ).first()
+
+    if active_attempt:
+        # Quiz attempt has already started, redirect or show an error message
+        return HttpResponseRedirect(reverse("quizInfo", args=(id, )))
+    
+    # Check if the user already has a prev attempt for this quiz
+    prev_attempt = QuizAttempt.objects.filter(
+        user=request.user,
+        quiz=quizData,
+    )
+
+    if prev_attempt.exists():
+        prev_attempt.delete()
+    
+    # Create a new quizAttempt instance
+    quizAttempt = QuizAttempt.objects.create(
+        user=request.user,
+        quiz=quizData,
+        start_time=datetime.now(),
+        end_time=datetime.now() + timedelta(minutes=quizData.duration)
+    )
+
+    # Retrieve and display quiz questions
+    questions = quizData.question_set.all()
+    
+    return render(request, 'revuCMS/startQuiz.html', {
+        "quiz": quizData,
+        "quizAttempt": quizAttempt,
+        "questions": questions
+    })
+
+def submitQuiz(request, id):
+
+    if request.method == 'POST':
+        quiz = Quiz.objects.get(pk=id)
+        total_questions = quiz.question_set.count()
+        currentUser = request.user 
+        user_responses = []
+
+        for i in range(1, total_questions + 1):
+            # Get a Question and the selected answer for it:
+            question_id = int(request.POST.get(f'questionId{i}'))
+            question = Question.objects.get(pk=question_id)
+            selected_answer_text = request.POST.get(f'answer{question_id}')
+            
+            # Get the AnswerChoice by the answer text:
+            selected_choice = AnswerChoice.objects.get(
+                question=question,
+                answer_text=selected_answer_text
+            )
+
+            # Get the user quiz attempt
+            quizAttempt = QuizAttempt.objects.get(
+                user=currentUser,
+                quiz = quiz
+                )
+
+            # Check if the selected answer is correct
+            if selected_choice.is_correct:
+                quizAttempt.correct_answers_count += 1
+
+            # Create and save a UserResponse object
+            user_response = UserResponse.objects.create(
+                user=currentUser,
+                question=question,
+                selected_choice=selected_choice
+            )
+            user_responses.append(user_response)
+
+            # Update the end time
+            quizAttempt.end_time =datetime.now()
+
+            quizAttempt.save()
+
+        return HttpResponseRedirect(reverse("quizResult", args=(id, )))
+
+    return redirect('index')
+
+def quizResult(request, id):
+    # Retrieve the quiz attempt, quiz, and user responses
+    quiz_attempt = get_object_or_404(QuizAttempt, user=request.user, quiz_id=id)
+    quiz = quiz_attempt.quiz
+    user_responses = UserResponse.objects.filter(user=request.user, question__quiz=quiz)
+
+    # Calculate the user's score
+    score = (quiz_attempt.correct_answers_count / quiz.number_of_questions) * 100
+    quiz_attempt.score = round(score, 2)
+
+    # Check if passed or failed
+    quiz_attempt.passed = quiz_attempt.score >= quiz.required_score_to_pass
+    quiz_attempt.save()
+
+    # Get all the questions of a quiz
+    questions = Question.objects.filter(quiz=quiz)
+
+    return render(request, 'revuCMS/quizResult.html', {
+        'quiz': quiz,
+        'questions': questions,
+        'user_answers': user_responses,
+        'score': quiz_attempt.score,
+        'passed': quiz_attempt.passed
+    })
+
 
 def addQuiz(request, id):
     # Get the Lesson

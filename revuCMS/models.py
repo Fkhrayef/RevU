@@ -1,3 +1,4 @@
+from django.utils import timezone
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
@@ -93,7 +94,7 @@ class AnswerChoice(models.Model):
     is_correct = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"Question: {self.question.question_text} - Answer: {self.answer_text} Correct Answer: {self.is_correct}"
+        return f"{self.answer_text} Correct Answer: {self.is_correct}"
 
 class UserResponse(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -102,3 +103,15 @@ class UserResponse(models.Model):
 
     def __str__(self):
         return f"{self.user.username} "
+    
+class QuizAttempt(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
+    start_time = models.DateTimeField(default=timezone.now)
+    end_time = models.DateTimeField(blank=True, null=True)
+    score = models.IntegerField(default=0, blank=True, null=True)
+    correct_answers_count = models.IntegerField(default=0)
+    passed = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.user.username}'s attempt on {self.quiz.title}"

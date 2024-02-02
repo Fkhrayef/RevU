@@ -41,7 +41,7 @@
                             {% endfor %}
                             {% for quiz in item.quizzes %}
                             <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <a style="color:rgb(30,48,80); text-decoration: none;" href="google.com">
+                                <a style="color:rgb(30,48,80); text-decoration: none;" href="{% url 'quizInfo' id=quiz.id %}">
                                     <i class="fa-solid fa-sheet-plastic"></i>
                                     {{quiz.title}}
                                 </a>
