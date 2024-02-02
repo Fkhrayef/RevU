@@ -415,7 +415,8 @@ def submitQuiz(request, id):
             user_response = UserResponse.objects.create(
                 user=currentUser,
                 question=question,
-                selected_choice=selected_choice
+                selected_choice=selected_choice,
+                quiz_attempt=quizAttempt
             )
             user_responses.append(user_response)
 

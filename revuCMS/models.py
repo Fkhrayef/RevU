@@ -96,14 +96,6 @@ class AnswerChoice(models.Model):
     def __str__(self):
         return f"{self.answer_text} Correct Answer: {self.is_correct}"
 
-class UserResponse(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    question = models.ForeignKey(Question, on_delete=models.CASCADE)
-    selected_choice = models.ForeignKey(AnswerChoice, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return f"{self.user.username} "
-    
 class QuizAttempt(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
@@ -115,3 +107,13 @@ class QuizAttempt(models.Model):
 
     def __str__(self):
         return f"{self.user.username}'s attempt on {self.quiz.title}"
+
+class UserResponse(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    selected_choice = models.ForeignKey(AnswerChoice, on_delete=models.CASCADE)
+    quiz_attempt = models.ForeignKey(QuizAttempt, on_delete=models.CASCADE, blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.user.username} "
+    
