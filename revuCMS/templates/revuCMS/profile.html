@@ -1,4 +1,5 @@
 {% extends "revuCMS/layout.html" %}
+{% load static %}
 
 {% block body %}
     {% if user.first_name %}
@@ -6,7 +7,25 @@
     {% else %}
         <h1 class="my-5 text-center">Welcome {{ user.username }}</h1>
     {% endif %}
-    <form action="{% url 'profile' %}" method="POST">
+    <div class="row justify-content-center">
+        {% for award in awards %}
+            <div class="card mb-3 mx-2" style="max-width: 320px;">
+                <div class="row g-2">
+                <div class="col-md-4">
+                    <img src="{% static 'revuCMS/'|add:award.badge.badge|add:'.png' %}" class="img-fluid rounded-start" alt="Bronze">
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                    <h5 class="card-title">{{ award.name }}</h5>
+                    <p class="card-text">{{ award.description }}</p>
+                    </div>
+                </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <h1 class="my-5 text-center">Edit Your Profile</h1>
+    <form action="{% url 'profile' %}" method="POST" style="max-width: 540px;" class="mx-auto text-center">
         {% csrf_token %}
         <div class="form-floating mb-3">
             <input type="text" name="fname" class="form-control" id="fname" placeholder="First Name" value="{{ user.first_name }}">
@@ -24,6 +43,6 @@
             <input type="email" name="email" class="form-control" id="email" placeholder="email" value="{{ user.email }}">
             <label for="email">Email Address</label>
         </div>
-        <input class="btn btn-primary" type="submit" value="Edit">
+        <input class="btn btn-primary" type="submit" value="Edit" style="width: 540px;">
     </form>
 {% endblock %}

@@ -24,6 +24,11 @@ class Course(models.Model):
 
     def __str__(self):
         return self.title
+    
+    def is_completed(self, user):
+        # Check if all lessons in the course are completed by the user
+        lessons = Lesson.objects.filter(course=self)
+        return all(lesson.is_completed(user) for lesson in lessons)
 
 class Lesson(models.Model):
     title = models.CharField(max_length=100)
@@ -33,7 +38,9 @@ class Lesson(models.Model):
         return self.title
     
     def is_completed(self, user):
-        return all(video.user_progress.filter(user=user, is_completed=True).exists() for video in self.videos.all())
+        # Check if all videos in the lesson are completed by the user
+        videos = Video.objects.filter(lesson=self)
+        return all(UserProgress.objects.filter(user=user, video=video, is_completed=True).exists() for video in videos)
 
 class Video(models.Model):
     title = models.CharField(max_length=100)
@@ -42,7 +49,7 @@ class Video(models.Model):
 
     def __str__(self):
         return self.title
-    
+
 class UserProgress(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True, related_name='userProgress')
     video = models.ForeignKey(Video, on_delete=models.CASCADE, blank=True, null=True, related_name='videoProgress')
@@ -116,4 +123,20 @@ class UserResponse(models.Model):
 
     def __str__(self):
         return f"{self.user.username} "
-    
+
+# Awards
+class Badge(models.Model):
+    badge = models.CharField(max_length=10)
+
+    def __str__(self):
+        return self.badge
+
+class Award(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='awards')
+    name = models.CharField(max_length=50)
+    description = models.TextField(max_length=100)
+    badge = models.ForeignKey(Badge, on_delete=models.CASCADE, blank=True, null=True)
+
+    def __str__(self):
+        return f"({self.user.username})'s Award for {self.name}"
+

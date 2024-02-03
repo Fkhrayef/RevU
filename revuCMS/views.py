@@ -4,7 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
 from datetime import datetime, timedelta
-from .models import User, Category, Course, Lesson, Video, Comment, UserProgress, Difficulty, Quiz, Question, AnswerChoice, UserResponse, QuizAttempt
+from .models import User, Category, Course, Lesson, Video, Comment, UserProgress, Difficulty, Quiz, Question, AnswerChoice, UserResponse, QuizAttempt, Award, Badge
 
 
 def index(request):
@@ -182,6 +182,40 @@ def mark_videos_completed(request, id):
         userProgress.is_completed = isCompleted
         userProgress.save()
 
+        # Award for First Video
+        # Check if the user has already received the award for the first video
+        if not Award.objects.filter(user=currentUser, name="First Video !").exists():
+            # Give the award for the first video
+            complete_first_video(request, video)
+
+        # Award for First Lesson
+        lessonData = video.lesson
+        if lessonData.is_completed(currentUser):
+            # Check if the user has already received the award for the first lesson
+            if not Award.objects.filter(user=currentUser, name="First Lesson !").exists():
+                # Give the award for the first lesson
+                complete_first_lesson(request, lessonData)
+        
+        # Award for First Course
+        courseData = lessonData.course
+        if courseData.is_completed(currentUser):
+            # Check if the user has already received the award for the first course
+            if not Award.objects.filter(user=currentUser, name="First Course !").exists():
+                # Give the award for completing the first course
+                complete_first_course(request, courseData)
+
+        # Check if the user has completed all courses
+        all_courses = Course.objects.all()
+        course_counter = 0
+
+        for course in all_courses:
+            if course.is_completed(currentUser):
+                course_counter+=1
+        
+        if all_courses.count() == course_counter:
+            if not Award.objects.filter(user=currentUser, name="Master of Courses !").exists():
+                complete_all_courses(request)
+
         return HttpResponseRedirect(reverse("courseContent", args=(video.lesson.course.id, )))
 
 
@@ -311,9 +345,11 @@ def editVid(request, id):
 
 def profile(request):
     currentUser = request.user
+    awards = Award.objects.filter(user=currentUser)
     if request.method == "GET":
         return render(request, 'revuCMS/profile.html', {
-            "user": currentUser
+            "user": currentUser,
+            "awards": awards
         })
     else:
         # Getting the new edited values
@@ -445,6 +481,19 @@ def quizResult(request, id):
 
     # Get all the questions of a quiz
     questions = Question.objects.filter(quiz=quiz)
+
+    # Check if the user has already received the award for passing a quiz
+    currentUser = request.user
+    if not Award.objects.filter(user=currentUser, name="Pass a quiz !").exists():
+        # Give the award for passing a quiz
+        pass_quiz(request, quiz)
+    
+    # Check if the user got full mark to give him an award.
+    if score == 100:
+        # Check if the user has already received the award for getting a full mark
+        if not Award.objects.filter(user=currentUser, name="Full Mark !").exists():
+            # Give the award for passing a quiz
+            full_mark_in_quiz(request, quiz)
 
     return render(request, 'revuCMS/quizResult.html', {
         'quiz': quiz,
@@ -627,6 +676,59 @@ def deleteQuestion(request, id):
     # Delete the object
     questionData.delete()
     return HttpResponseRedirect(reverse("manageQuiz", args=(quizData.id, )))
+
+# Awards
+def award_user(user, name, description, badge):
+    award = Award(
+        user=user,
+        name=name, 
+        description=description, 
+        badge=badge
+        )
+    award.save()
+
+def complete_first_video(request, video):
+    user = request.user
+    award_name = "First Video !"
+    award_description = f"Completed first video: {video.title}"
+    award_badge = Badge.objects.get(badge="Bronze")
+    award_user(user, award_name, award_description, award_badge)
+
+def complete_first_lesson(request, lesson):
+    user = request.user
+    award_name = "First Lesson !"
+    award_description = f"Completed first lesson: {lesson.title}"
+    award_badge = Badge.objects.get(badge="Silver")
+    award_user(user, award_name, award_description, award_badge)
+
+def complete_first_course(request, course):
+    user = request.user
+    award_name = "First Course !"
+    award_description = f"Completed first course: {course.title}"
+    award_badge = Badge.objects.get(badge="Gold")
+    award_user(user, award_name, award_description, award_badge)
+
+def pass_quiz(request, quiz):
+    user = request.user
+    award_name = "Pass a quiz !"
+    award_description = f"Passed quiz: {quiz.title}"
+    award_badge = Badge.objects.get(badge="Silver")
+    award_user(user, award_name, award_description, award_badge)
+
+def full_mark_in_quiz(request, quiz):
+    user = request.user
+    award_name = "Full Mark !"
+    award_description = f"Full mark in quiz: {quiz.title}"
+    award_badge = Badge.objects.get(badge="Gold")
+    award_user(user, award_name, award_description, award_badge)
+
+def complete_all_courses(request):
+    user = request.user
+    award_name = "Master of Courses !"
+    award_description = "Completed all courses"
+    award_badge = Badge.objects.get(badge="Platinum")
+    award_user(user, award_name, award_description, award_badge)
+
 
 def login_view(request):
     if request.method == "POST":
