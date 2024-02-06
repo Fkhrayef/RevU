@@ -2,39 +2,41 @@
 {% load static %}
 
 {% block body %}
-    <h2 class="mx-3">Manage {{ quiz.title }}</h2>
-    <div class="mx-5 my-5">
-        {% for question in questions %}
-        <div class="card my-3">
-            <div class="card-header d-flex justify-content-between align-items-center">
-            {{ question.question_text }}
-            <div class="ml-auto">
-                <a style="color:rgb(30,48,80); text-decoration: none; margin-right: 10px; margin-left: 10px;" href="{% url 'editQuestion' id=question.id %}">
-                    <i class="fa-regular fa-pen-to-square" style="color: #FFD43B;"></i>
-                </a>
-                <a style="color:rgb(30,48,80); text-decoration: none;" href="{% url 'deleteQuestion' id=question.id %}">
-                    <i class="fa-solid fa-trash" style="color: #ff0000; display: inline-block;"></i>
-                </a>
-            </div>
-            </div>
-            <div class="card-body">
-                {% for answer in question.answerchoice_set.all %}
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-                    <label class="form-check-label" for="flexRadioDefault1">
-                    {{ answer.answer_text }}
-                    </label>
+    <div class="container">
+        <h3 class="mx-2">Manage {{ quiz.title }}</h3>
+        <div class="mr-5 mb-5">
+            {% for question in questions %}
+            <div class="card my-3">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <textarea style="max-height: 100px; overflow-y: auto;" cols="100" rows="16">{{ question.question_text }}</textarea>
+                <div class="ml-auto">
+                    <a style="color:rgb(30,48,80); text-decoration: none; margin-right: 10px; margin-left: 10px;" href="{% url 'editQuestion' id=question.id %}">
+                        <i class="fa-regular fa-pen-to-square" style="color: #FFD43B;"></i>
+                    </a>
+                    <a style="color:rgb(30,48,80); text-decoration: none;" href="{% url 'deleteQuestion' id=question.id %}">
+                        <i class="fa-solid fa-trash" style="color: #ff0000; display: inline-block;"></i>
+                    </a>
                 </div>
-                {% endfor %}
+                </div>
+                <div class="card-body">
+                    {% for answer in question.answerchoice_set.all %}
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                        <label class="form-check-label" for="flexRadioDefault1">
+                        {{ answer.answer_text }}
+                        </label>
+                    </div>
+                    {% endfor %}
+                </div>
             </div>
-        </div>
-        {% endfor %}
-        <div class="card">
-            <div class="card-header">
-                <a style="color:rgb(30,48,80); text-decoration: none;" href="{% url 'addQuestion' id=quiz.id %}">
-                    <i class="fa-solid fa-plus"></i> 
-                    Add a Question
-                </a>
+            {% endfor %}
+            <div class="card">
+                <div class="card-header">
+                    <a style="color:rgb(30,48,80); text-decoration: none;" href="{% url 'addQuestion' id=quiz.id %}">
+                        <i class="fa-solid fa-plus mr-1"></i> 
+                        Add Question
+                    </a>
+                </div>
             </div>
         </div>
     </div>

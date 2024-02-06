@@ -2,25 +2,37 @@
 {% load static %}
 
 {% block body %}
-    <h2 class="mx-3">Manage Courses</h2>
-    <div class="row mx-3 my-3">
-        {% for course in courses %}
-            <div class="card mx-3" style="width: 18rem;">
-                <img src="{{ course.imageUrl }}" class="card-img-top" alt="{{ course.title }}">
-                <div class="card-body">
-                    <h5 class="card-title">{{ course.title }}</h5>
-                    <p class="card-text">{{ course.description }}</p>
-                    <a href="{% url 'editCourse' id=course.id %}" class="btn btn-primary">Edit</a>
-                    <a href="{% url 'deleteCourse' id=course.id %}" class="btn btn-danger">Delete</a>
-                </div>
+    <div class="container">
+        <form action="{% url 'displayCategory' %}" method="POST" class="row g-2 align-items-center mb-1 mx-5">
+            {% csrf_token %}
+            <div class="col-auto">
+                <select name="category" class="form-select form-select-sm my-3" aria-label="Default select example" onchange="this.form.submit()" style="width: 25rem;">
+                    <option value="" disabled selected style="color: gray;">Select a category !</option>
+                    {% for category in categories %}
+                        <option value="{{ category }}">{{ category }}</option>
+                    {% endfor %}
+                </select>
             </div>
-        {% endfor %}
-        <div class="card mx-3" style="width: 18rem;">
-            <img src="{% static 'revuCMS/addCourse.png' %}" alt="createCourse">
-            <div class="card-body">
-                <h5 class="card-title">Create a New Course</h5>
-                <p class="card-text">This feature allows you to easily add new courses to the adaptive learning platform.</p>
-                <a href="{% url 'create' %}" class="btn btn-warning">Create a new Course</a>
+        </form>
+        <div class="row mx-3">
+            {% for course in courses %}
+                <div class="card mx-3" style="width: 18rem;">
+                    <img src="{{ course.imageUrl }}" class="card-img-top" alt="{{ course.title }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ course.title }}</h5>
+                        <p class="card-text">{{ course.description }}</p>
+                        <a href="{% url 'editCourse' id=course.id %}" class="btn btn-primary" style="background-color: rgba(127,127,213,1); color: white; border: none;" onmouseover="this.style.backgroundColor='white'; this.style.border='1px solid rgba(127,127,213,1)'; this.style.color='rgba(127,127,213,1)'" onmouseout="this.style.backgroundColor='rgba(127,127,213,1)'; this.style.color='white'; this.style.border='none'">Edit</a>
+                        <a href="{% url 'deleteCourse' id=course.id %}" class="btn btn-danger" style="background-color: rgb(224, 0, 0); color: white; border: none;" onmouseover="this.style.backgroundColor='white'; this.style.border='1px solid rgb(224, 0, 0)'; this.style.color='rgb(224, 0, 0)'" onmouseout="this.style.backgroundColor='rgb(224, 0, 0)'; this.style.color='white'; this.style.border='none'">Delete</a>
+                    </div>
+                </div>
+            {% endfor %}
+            <div class="card mx-3 my-3" style="width: 18rem;">
+                <img src="{% static 'revuCMS/addCourse.png' %}" alt="createCourse">
+                <div class="card-body">
+                    <h5 class="card-title">Create a New Course</h5>
+                    <p class="card-text">This feature allows you to easily add new courses to the adaptive learning platform.</p>
+                    <a href="{% url 'create' %}" class="btn btn-warning" style="background-color: rgba(127,127,213,1); color: white; border: none;" onmouseover="this.style.backgroundColor='white'; this.style.border='1px solid rgba(127,127,213,1)'; this.style.color='rgba(127,127,213,1)'" onmouseout="this.style.backgroundColor='rgba(127,127,213,1)'; this.style.color='white'; this.style.border='none'">Create!</a>
+                </div>
             </div>
         </div>
     </div>

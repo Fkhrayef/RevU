@@ -1,27 +1,41 @@
 {% extends "revuCMS/layout.html" %}
-
+{% load static %}
 {% block body %}
-    <h2>Active Courses</h2>
-    <form action="{% url 'displayCategory' %}" method="POST" class="my-3">
-        {% csrf_token %}
-        <label for="category">Select a category:</label>
-        <select name="category" class="form-select form-select-sm my-3" aria-label="Default select example">
-            {% for category in categories %}
-                <option value="{{ category }}">{{ category }}</option>
-            {% endfor %}
-        </select>
-        <button type="submit" class="btn btn-secondary">Filter</button>
-    </form>
-    <div class="row mx-3">
-        {% for course in courses %}
-            <div class="card mx-3" style="width: 18rem;">
-                <img src="{{ course.imageUrl }}" class="card-img-top" alt="{{ course.title }}">
-                <div class="card-body">
-                    <h5 class="card-title">{{ course.title }}</h5>
-                    <p class="card-text">{{ course.description }}</p>
-                    <a href="{% url 'course' id=course.id %}" class="btn btn-primary">Details</a>
-                </div>
+    <div class="container">
+        <div class="row mb-5">
+            <div class="col-md-6 p-0">
+                <h2 style="margin-top: 10rem; font-weight: bold;">Learning has never been much easier !</h2>
+                <h3 style="font-weight: bold;">From <span style="color: rgba(127,127,213,1);">Anywhere</span> and <span style="color: rgba(127,127,213,1);">Everywhere</span>.</h3>
+                <p class="my-2">Take a placement test to determine your level and start <br> your journey in an adaptive learning platform.</p>
+                <a href="{% url 'quizInfo' id=15 %}" class="btn btn-warning mt-2" style="background-color: rgba(127,127,213,1); color: white; border: none;" onmouseover="this.style.backgroundColor='white'; this.style.border='1px solid rgba(127,127,213,1)'; this.style.color='rgba(127,127,213,1)'" onmouseout="this.style.backgroundColor='rgba(127,127,213,1)'; this.style.color='white'; this.style.border='none'"><strong>Take Your Placement Test Now !</strong></a>
             </div>
-        {% endfor %}
+            <div class="col-md-6 p-4 d-flex flex-column align-items-center justify-content-center">
+                <img src="{% static 'revuCMS/Background.png' %}" alt="" style="margin-top: 5rem;">
+            </div>
+        </div>
+        <h2 class="mx-5">Courses:</h2>
+        <form action="{% url 'displayCategory' %}" method="POST" class="row g-2 align-items-center mb-1 mx-5">
+            {% csrf_token %}
+            <div class="col-auto">
+                <select name="category" class="form-select form-select-sm my-3" aria-label="Default select example" onchange="this.form.submit()" style="width: 25rem;">
+                    <option value="" disabled selected style="color: gray;">Select a category !</option>
+                    {% for category in categories %}
+                        <option value="{{ category }}">{{ category }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </form>
+        <div class="row mx-3">
+            {% for course in courses %}
+                <div class="card mx-3 mb-3" style="width: 17rem;">
+                    <img src="{{ course.imageUrl }}" class="card-img-top" alt="{{ course.title }}" style="border-radius: 5px; ">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ course.title }}</h5>
+                        <p class="card-text">{{ course.description }}</p>
+                        <a href="{% url 'course' id=course.id %}" class="btn btn-primary" style="background-color: rgba(127,127,213,1); color: white; border: none;" onmouseover="this.style.backgroundColor='white'; this.style.border='1px solid rgba(127,127,213,1)'; this.style.color='rgba(127,127,213,1)'" onmouseout="this.style.backgroundColor='rgba(127,127,213,1)'; this.style.color='white'; this.style.border='none'">Details</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
     </div>
 {% endblock %}

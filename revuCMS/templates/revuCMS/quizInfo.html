@@ -1,24 +1,24 @@
 {% extends "revuCMS/layout.html" %}
 
 {% block body %}
-    <h4>Add a new Question</h4>
-
-    <form action="{% url 'startQuiz' id=quiz.id %}" method="POST" class="my-3">
-        {% csrf_token %}
-        <div class="card text-left my-3" style="margin-right: 800px; margin-left: 10px;">
-            <div class="card-header">
-                {{quiz.title}}
+    <div class="container">
+        <form action="{% url 'startQuiz' id=quiz.id %}" method="POST" class="my-3">
+            {% csrf_token %}
+            <div class="card text-left my-3" style="margin-right: 5rem;">
+                <div class="card-header">
+                    {{quiz.title}}
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Quiz Information</h5>
+                    <ul>
+                        <li>Difficulty: <strong>{{ quiz.difficulty }}</strong></li>
+                        <li>Questions: <strong>{{ quiz.number_of_questions }}</strong></li>
+                        <li>Score to Pass: <strong>{{ quiz.required_score_to_pass }}%</strong></li>
+                        <li>Time: <strong>{{ quiz.duration }} Minute(s)</strong></li>
+                    </ul>
+                    <button type="submit" class="btn btn-success">Start Quiz</button>
+                </div>
             </div>
-            <div class="card-body">
-                <h5 class="card-title">Quiz Information</h5>
-                <ul>
-                    <li>Difficulty: <strong>{{ quiz.difficulty }}</strong></li>
-                    <li>Questions: <strong>{{ quiz.number_of_questions }}</strong></li>
-                    <li>Score to Pass: <strong>{{ quiz.required_score_to_pass }}%</strong></li>
-                    <li>Time: <strong>{{ quiz.duration }} Minute(s)</strong></li>
-                </ul>
-                <button type="submit" class="btn btn-success">Start Quiz</button>
-            </div>
-        </div>
-    </form>
+        </form>
+    </div>
 {% endblock %}

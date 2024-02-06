@@ -1,24 +1,26 @@
 {% extends "revuCMS/layout.html" %}
 
 {% block body %}
-    <h2>Edit Video</h2>
-    <form action="{% url 'editLesson' id=lesson.id %}" method="POST" class="my-3">
-        {% csrf_token %}
-        <input type="hidden" name="id" value="{{ lesson.id }}">
-        <div class="form-floating mb-3">
-            <input type="text" name="title" class="form-control" id="title" placeholder="Title" value="{{ lesson.title }}">
-            <label for="title">Lesson Title</label>
-        </div>
-        <!-- This section is to change the course of the lesson -->
-        <!-- <div class="form-group my-3">
-            <label for="lesson">Select a Course:</label>
-            <select name="course" class="form-select" aria-label="Default select example">
-                <option value="{{ video.course }}" selected hidden >{{ lesson.course }}</option>
-                {% for course in courses %}
-                    <option value="{{ course.title }}">{{ course }}</option>
-                {% endfor %}
-            </select>
-        </div> -->
-        <button type="submit" class="btn btn-warning">Edit !</button>
-    </form>
+    <div class="container">
+        <h3 class="mx-2">Edit Lesson:</h3>
+        <form action="{% url 'editLesson' id=lesson.id %}" method="POST" class="my-3">
+            {% csrf_token %}
+            <input type="hidden" name="id" value="{{ lesson.id }}">
+            <div class="form-floating mb-3">
+                <input type="text" name="title" class="form-control" id="title" placeholder="Title" value="{{ lesson.title }}">
+                <label for="title">Lesson Title</label>
+            </div>
+            <!-- This section is to change the course of the lesson -->
+            <!-- <div class="form-group my-3">
+                <label for="lesson">Select a Course:</label>
+                <select name="course" class="form-select" aria-label="Default select example">
+                    <option value="{{ video.course }}" selected hidden >{{ lesson.course }}</option>
+                    {% for course in courses %}
+                        <option value="{{ course.title }}">{{ course }}</option>
+                    {% endfor %}
+                </select>
+            </div> -->
+            <button type="submit" class="btn btn-warning" style="background-color: rgba(127,127,213,1);; color: white; border: none;" onmouseover="this.style.backgroundColor='white'; this.style.border='1px solid rgba(127,127,213,1)'; this.style.color='rgba(127,127,213,1)'" onmouseout="this.style.backgroundColor='rgba(127,127,213,1)'; this.style.color='white'; this.style.border='none'">Edit !</button>
+        </form>
+    </div>
 {% endblock %}

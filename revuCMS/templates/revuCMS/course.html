@@ -1,43 +1,53 @@
 {% extends "revuCMS/layout.html" %}
 
 {% block body %}
-    <h2>Course: {{ course.title }}</h2>
-    <img src="{{ course.imageUrl }}" alt="{{ course.title }}" height="400px">
-    <p>{{ course.description }}</p>
-    {% if user.is_authenticated %}
-        {% if isEnrolled %}
-            <form action="{% url 'disenroll' id=course.id %}" method="POST">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-danger">Disenroll !</button>
-            </form>
-        {% else %}
-        <form action="{% url 'enroll' id=course.id %}" method="POST">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-success">Enroll !</button>
-        </form>
-        {% endif %}
-    {% endif %}
-    
-    <h2 class="my-3">Discussion Board</h2>
-    <br>
-    {% if user.is_authenticated %}
-        <form action="{% url 'addComment' id=course.id %}" method="POST">
-            {% csrf_token %}
-            <div class="form-group">
-                <input type="text" name="newComment" placeholder="Type your message">
-                <button type="submit" class="btn btn-warning">Comment</button>
+    <div class="container">
+        <div class="card mb-3 mt-5 mx-auto" style="max-width: 700px;">
+            <div class="row g-0">
+                <div class="col-md-4">
+                    <img src="{{ course.imageUrl }}" class="img-fluid rounded-start" alt="{{ course.title }}">
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ course.title }}</h5>
+                        <p class="card-text">{{ course.description }}</p>
+                        {% if user.is_authenticated %}
+                            {% if isEnrolled %}
+                                <form action="{% url 'disenroll' id=course.id %}" method="POST">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger" style="background-color: rgb(224, 0, 0); color: white; border: none;" onmouseover="this.style.backgroundColor='white'; this.style.border='1px solid rgb(224, 0, 0)'; this.style.color='rgb(224, 0, 0)'" onmouseout="this.style.backgroundColor='rgb(224, 0, 0)'; this.style.color='white'; this.style.border='none'">Disenroll !</button>
+                                </form>
+                            {% else %}
+                            <form action="{% url 'enroll' id=course.id %}" method="POST">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-success" style="background-color: green; color: white; border: none;" onmouseover="this.style.backgroundColor='white'; this.style.border='1px solid green'; this.style.color='green'" onmouseout="this.style.backgroundColor='green'; this.style.color='white'; this.style.border='none'">Enroll !</button>
+                            </form>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
             </div>
-        </form>
-    {% endif %}
-    <br>
-    <ul class="list-group">
-        {% for comment in allComments %}
-            <li class="list-group-item">
-                {{ comment.message }}
-                <br>
-                <p>commented by: <strong>{{ comment.user }}</strong></p>
-            </li>
-        {% endfor %}
-    </ul>
-    
+        </div>
+        <h2 class="my-3">Discussion Board</h2>
+        <br>
+        {% if user.is_authenticated %}
+            <form action="{% url 'addComment' id=course.id %}" method="POST">
+                {% csrf_token %}
+                <div class="input-group">
+                    <input type="text" name="newComment" class="form-control" placeholder="Type your message" aria-describedby="button-addon2">
+                    <button type="submit" class="btn btn-warning" id="button-addon2">Comment</button>
+                </div>
+            </form>
+        {% endif %}
+        <br>
+        <ul class="list-group">
+            {% for comment in allComments %}
+                <li class="list-group-item">
+                    {{ comment.message }}
+                    <br>
+                    <p class="mt-2">Commented by: <strong>{{ comment.user }}</strong></p>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
 {% endblock %}

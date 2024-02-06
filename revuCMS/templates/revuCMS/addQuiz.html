@@ -3,9 +3,9 @@
 {% block title %}Add Quiz{% endblock %}
 
 {% block body %}
-    <div class="container mt-5">
-        <h2>Add Quiz</h2>
-        <form method="POST" action="{% url 'addQuiz' id=lesson.id %}">
+    <div class="container">
+        <h3 class="mx-2">Add Quiz</h3>
+        <form method="POST" action="{% url 'addQuiz' id=lesson.id %}" class="my-3">
             {% csrf_token %}
             <div class="form-floating mb-3">
                 <input type="text" name="quizTitle" class="form-control" id="quizTitle" placeholder="quizTitle">
@@ -31,7 +31,7 @@
                     {% endfor %}
                 </select>
             </div>
-            <button type="submit" class="btn btn-primary">Add Quiz</button>
+            <button type="submit" class="btn btn-primary" style="background-color: rgba(127,127,213,1);; color: white; border: none;" onmouseover="this.style.backgroundColor='white'; this.style.border='1px solid rgba(127,127,213,1)'; this.style.color='rgba(127,127,213,1)'" onmouseout="this.style.backgroundColor='rgba(127,127,213,1)'; this.style.color='white'; this.style.border='none'">Confirm !</button>
         </form>
     </div>
 {% endblock %}

@@ -43,6 +43,6 @@
             <input type="email" name="email" class="form-control" id="email" placeholder="email" value="{{ user.email }}">
             <label for="email">Email Address</label>
         </div>
-        <input class="btn btn-primary" type="submit" value="Edit" style="width: 540px;">
+        <input class="btn btn-primary" type="submit" value="Edit" style="width: 540px;background-color: rgba(127,127,213,1);; color: white; border: none;" onmouseover="this.style.backgroundColor='white'; this.style.border='1px solid rgba(127,127,213,1)'; this.style.color='rgba(127,127,213,1)'" onmouseout="this.style.backgroundColor='rgba(127,127,213,1)'; this.style.color='white'; this.style.border='none'">
     </form>
 {% endblock %}

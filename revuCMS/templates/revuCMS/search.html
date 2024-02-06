@@ -1,21 +1,26 @@
 {% extends "revuCMS/layout.html" %}
 
 {% block body %}
-    {% if searchQuery %}
-        <h2>Search Results For {{ searchQuery }}</h2>
-        {% if courseSearch %}
-            {% for course in courseSearch %}
-            <div class="card mx-3 my-5" style="width: 18rem;">
-                <img src="{{ course.imageUrl }}" class="card-img-top" alt="{{ course.title }}">
-                <div class="card-body">
-                    <h5 class="card-title">{{ course.title }}</h5>
-                    <p class="card-text">{{ course.description }}</p>
-                    <a href="{% url 'course' id=course.id %}" class="btn btn-primary">Details</a>
+    <div class="container">
+        {% if searchQuery %}
+            
+            {% if courseSearch %}
+                <h2 class="mx-5 mb-5 mt-4">Search Result(s) For "<strong>{{ searchQuery }}</strong>":</h2>
+                <div class="row mx-3">
+                    {% for course in courseSearch %}
+                    <div class="card mx-3 mb-5" style="width: 18rem;">
+                        <img src="{{ course.imageUrl }}" class="card-img-top" alt="{{ course.title }}">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ course.title }}</h5>
+                            <p class="card-text">{{ course.description }}</p>
+                            <a href="{% url 'course' id=course.id %}" class="btn btn-primary" style="background-color: rgba(127,127,213,1); color: white; border: none;" onmouseover="this.style.backgroundColor='white'; this.style.border='1px solid rgba(127,127,213,1)'; this.style.color='rgba(127,127,213,1)'" onmouseout="this.style.backgroundColor='rgba(127,127,213,1)'; this.style.color='white'; this.style.border='none'">Details</a>
+                        </div>
+                    </div>
+                    {% endfor %}
                 </div>
-            </div>
-            {% endfor %}
-        {% else %}
-        <h2>No Search Results For {{ searchQuery }}</h2>
+            {% else %}
+                <h2 class="mx-5 mt-4">Sorry, no Search Results For "<strong>{{ searchQuery }}</strong>"</h2>
+            {% endif %}
         {% endif %}
-    {% endif %}
+    </div>
 {% endblock %}

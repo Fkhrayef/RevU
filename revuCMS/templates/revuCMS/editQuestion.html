@@ -1,28 +1,29 @@
 {% extends "revuCMS/layout.html" %}
 
 {% block body %}
-    <h4>Add a new Question</h4>
+    <div class="container">
+        <h3 class="mx-2">Edit Question:</h3>
 
-    <form action="{% url 'editQuestion' id=question.id %}" method="POST" class="my-3">
-        {% csrf_token %}
-        <div class="card my-3">
-            <div class="form-floating mb-3">
-                <input type="text" name="question_text" class="form-control" id="question_text" placeholder="question_text" value="{{ question.question_text }}">
-                <label for="question_text">Type your Question</label>
+        <form action="{% url 'editQuestion' id=question.id %}" method="POST" class="my-3">
+            {% csrf_token %}
+            <div class="card my-3">
+                <div class="form-floating mb-3">
+                    <textarea name="question_text" id="question_text" cols="172" rows="10" class="p-2"></textarea>
+                </div>
+                <div class="card-body">
+                    {% for answer in answers %}
+                        <div class="form-check mb-2">
+                            <input type="hidden" name="answer_id_{{ forloop.counter }}" value="{{ answer.id }}">
+                            <input class="form-check-input" type="radio" name="correct_answer" id="answer{{ forloop.counter }}" value="{{ answer.id }}"
+                                {% if answer.is_correct %}checked{% endif %}>
+                            <label class="form-check-label" for="answer{{ forloop.counter }}">
+                                <input type="text" name="answer{{ forloop.counter }}" class="form-control" placeholder="Answer 1" value="{{ answer.answer_text }}">
+                            </label>
+                        </div>
+                    {% endfor %}
+                    <button type="submit" class="btn btn-warning my-3 mx-4" style="background-color: rgba(127,127,213,1);; color: white; border: none;" onmouseover="this.style.backgroundColor='white'; this.style.border='1px solid rgba(127,127,213,1)'; this.style.color='rgba(127,127,213,1)'" onmouseout="this.style.backgroundColor='rgba(127,127,213,1)'; this.style.color='white'; this.style.border='none'">Edit Question!</button>
+                </div>
             </div>
-            <div class="card-body">
-                {% for answer in answers %}
-                    <div class="form-check">
-                        <input type="hidden" name="answer_id_{{ forloop.counter }}" value="{{ answer.id }}">
-                        <input class="form-check-input" type="radio" name="correct_answer" id="answer{{ forloop.counter }}" value="{{ answer.id }}"
-                            {% if answer.is_correct %}checked{% endif %}>
-                        <label class="form-check-label" for="answer{{ forloop.counter }}">
-                            <input type="text" name="answer{{ forloop.counter }}" class="form-control" placeholder="Answer 1" value="{{ answer.answer_text }}">
-                        </label>
-                    </div>
-                {% endfor %}
-                <button type="submit" class="btn btn-warning my-3 mx-1">Edit Question!</button>
-            </div>
-        </div>
-    </form>
+        </form>
+    </div>
 {% endblock %}

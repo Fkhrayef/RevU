@@ -5,7 +5,8 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
 from datetime import datetime, timedelta
 from .models import User, Category, Course, Lesson, Video, Comment, UserProgress, Difficulty, Quiz, Question, AnswerChoice, UserResponse, QuizAttempt, Award, Badge
-
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 def index(request):
     activeCourses = Course.objects.filter(isActive=True)
@@ -47,8 +48,10 @@ def search(request):
 
 def manage(request):
     activeCourses = Course.objects.filter(isActive=True)
+    allCategories = Category.objects.all()
     return render(request, "revuCMS/manage.html", {
-        "courses": activeCourses
+        "courses": activeCourses,
+        "categories": allCategories
     })
 
 def createCourse(request):
@@ -115,7 +118,7 @@ def editCourse(request, id):
         courseData.save()
 
         # Redirecting to the Manage Courses page
-        return HttpResponseRedirect(reverse("editCourse", args=(id, )))
+        return HttpResponseRedirect(reverse("manage"))
 
 def enroll(request, id):
     courseData = Course.objects.get(pk=id)
@@ -144,8 +147,10 @@ def addComment(request, id):
 def enrolledCourses(request):
     currentUser = request.user
     courses = currentUser.CourseEnrollment.all()
+    allCategories = Category.objects.all()
     return render(request, "revuCMS/enrolledCourses.html", {
-        "courses": courses
+        "courses": courses,
+        "categories": allCategories
     })
 
 def courseContent(request, id):
@@ -187,6 +192,7 @@ def mark_videos_completed(request, id):
         if not Award.objects.filter(user=currentUser, name="First Video !").exists():
             # Give the award for the first video
             complete_first_video(request, video)
+            messages.success(request, 'Congrats! You Watched Your First Video! 🏆')
 
         # Award for First Lesson
         lessonData = video.lesson
@@ -195,6 +201,7 @@ def mark_videos_completed(request, id):
             if not Award.objects.filter(user=currentUser, name="First Lesson !").exists():
                 # Give the award for the first lesson
                 complete_first_lesson(request, lessonData)
+                messages.success(request, 'Congrats! You Finished Your First Lesson! 🏆')
         
         # Award for First Course
         courseData = lessonData.course
@@ -203,6 +210,7 @@ def mark_videos_completed(request, id):
             if not Award.objects.filter(user=currentUser, name="First Course !").exists():
                 # Give the award for completing the first course
                 complete_first_course(request, courseData)
+                messages.success(request, 'Congrats! You Completed Your First Course! 🏆')
 
         # Check if the user has completed all courses
         all_courses = Course.objects.all()
@@ -215,6 +223,7 @@ def mark_videos_completed(request, id):
         if all_courses.count() == course_counter:
             if not Award.objects.filter(user=currentUser, name="Master of Courses !").exists():
                 complete_all_courses(request)
+                messages.success(request, 'Congrats! You Completed All Courses! 🏆')
 
         return HttpResponseRedirect(reverse("courseContent", args=(video.lesson.course.id, )))
 
@@ -370,12 +379,14 @@ def profile(request):
         # Redirecting to the Manage Courses page
         return HttpResponseRedirect(reverse(profile))
 
+@login_required(login_url="login")
 def quizInfo(request, id):
     quizData = Quiz.objects.get(pk=id)
     return render(request, 'revuCMS/quizInfo.html', {
             "quiz": quizData
         })
 
+@login_required(login_url="login")
 def startQuiz(request, id):
     quizData = Quiz.objects.get(pk=id)
 
@@ -487,6 +498,7 @@ def quizResult(request, id):
     if not Award.objects.filter(user=currentUser, name="Pass a quiz !").exists():
         # Give the award for passing a quiz
         pass_quiz(request, quiz)
+        messages.success(request, 'Congrats! You Passed Your First Quiz! 🏆')
     
     # Check if the user got full mark to give him an award.
     if score == 100:
@@ -494,13 +506,25 @@ def quizResult(request, id):
         if not Award.objects.filter(user=currentUser, name="Full Mark !").exists():
             # Give the award for passing a quiz
             full_mark_in_quiz(request, quiz)
+            messages.success(request, 'Congrats! You Got Your First Full Mark! 🏆')
+    placement = 0
+    # Placement Test
+    if id == 15:
+        if score >= 80:
+            placement = "Data Structures"
+        elif score >= 60:
+            placement = "Object-Oriented Programming"
+        else:
+            placement = "Introduction to Computer Programming"
+
 
     return render(request, 'revuCMS/quizResult.html', {
         'quiz': quiz,
         'questions': questions,
         'user_answers': user_responses,
         'score': quiz_attempt.score,
-        'passed': quiz_attempt.passed
+        'passed': quiz_attempt.passed,
+        'placement': placement
     })
 
 

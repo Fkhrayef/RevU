@@ -1,32 +1,34 @@
 {% extends "revuCMS/layout.html" %}
 
 {% block body %}
-    <h2>Edit Course</h2>
-    <form action="{% url 'editCourse' id=course.id %}" method="POST" class="my-3">
-        {% csrf_token %}
-        <input type="hidden" name="id" value="{{ course.id }}">
-        <div class="form-floating mb-3">
-            <input type="text" name="title" class="form-control" id="title" placeholder="Title" value="{{ course.title }}">
-            <label for="title">Course Title</label>
-        </div>
-        <div class="form-floating mb-3">
-            <input type="text" name="description" class="form-control" id="description" placeholder="Description" value="{{ course.description }}">
-            <label for="description">Course Description</label>
-        </div>
-        <div class="form-floating mb-3">
-            <input type="text" name="imageurl" class="form-control" id="imageurl" placeholder="imageUrl" value="{{ course.imageUrl }}">
-            <label for="imageurl">Image URL</label>
-        </div>
-        <div class="form-group">
-            <label for="category">Select a category:</label>
-            <select name="category" class="form-select" aria-label="Default select example">
-                <option value="{{ course.category }}" selected hidden >{{ course.category }}</option>
-                {% for category in categories %}
-                    <option value="{{ category }}">{{ category }}</option>
-                {% endfor %}
-            </select>
-        </div>
-        
-        <button type="submit" class="btn btn-warning">Edit !</button>
-    </form>
+    <div class="container">
+        <h3 class="mx-2">Edit Course:</h3>
+        <form action="{% url 'editCourse' id=course.id %}" method="POST" class="my-3">
+            {% csrf_token %}
+            <input type="hidden" name="id" value="{{ course.id }}">
+            <div class="form-floating mb-3">
+                <input type="text" name="title" class="form-control" id="title" placeholder="Title" value="{{ course.title }}">
+                <label for="title">Course Title</label>
+            </div>
+            <div class="form-floating mb-3">
+                <input type="text" name="description" class="form-control" id="description" placeholder="Description" value="{{ course.description }}">
+                <label for="description">Course Description</label>
+            </div>
+            <div class="form-floating mb-3">
+                <input type="text" name="imageurl" class="form-control" id="imageurl" placeholder="imageUrl" value="{{ course.imageUrl }}">
+                <label for="imageurl">Image URL</label>
+            </div>
+            <div class="form-group">
+                <label for="category">Select a category:</label>
+                <select name="category" class="form-select" aria-label="Default select example">
+                    <option value="{{ course.category }}" selected hidden >{{ course.category }}</option>
+                    {% for category in categories %}
+                        <option value="{{ category }}">{{ category }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <button type="submit" class="btn btn-warning" style="background-color: rgba(127,127,213,1);; color: white; border: none;" onmouseover="this.style.backgroundColor='white'; this.style.border='1px solid rgba(127,127,213,1)'; this.style.color='rgba(127,127,213,1)'" onmouseout="this.style.backgroundColor='rgba(127,127,213,1)'; this.style.color='white'; this.style.border='none'">Edit !</button>
+        </form>
+    </div>
 {% endblock %}

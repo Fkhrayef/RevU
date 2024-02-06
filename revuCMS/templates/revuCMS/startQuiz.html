@@ -2,14 +2,14 @@
 {% load static %}
 
 {% block body %}
-    <h2 class="mx-3">Manage {{ quiz.title }}</h2>
+<div class="container">
     <div class="mx-5 my-5">
         <form action="{% url 'submitQuiz' id=quiz.id %}" method="POST" class="my-3">
             {% csrf_token %}
             {% for question in questions %}
                 <div class="card my-3">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        {{ question.question_text }}
+                        <textarea name="" id="" cols="172" rows="10" disabled style="max-height: 100px; overflow-y: auto;">{{ question.question_text }}</textarea>
                         <input type="hidden" name="questionId{{forloop.counter}}" id="questionId{{forloop.counter}}" value="{{ question.id }}">
                     </div>
                     <div class="card-body">
@@ -27,4 +27,5 @@
             <button type="submit" class="btn btn-success">Submit Quiz</button>
         </form>
     </div>
+</div>
 {% endblock %}

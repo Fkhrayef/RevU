@@ -1,17 +1,29 @@
 {% extends "revuCMS/layout.html" %}
 
 {% block body %}
-    <h2>Enrolled Courses</h2>
-    <div class="row mx-3">
-        {% for course in courses %}
-            <div class="card mx-3" style="width: 18rem;">
-                <img src="{{ course.imageUrl }}" class="card-img-top" alt="{{ course.title }}">
-                <div class="card-body">
-                    <h5 class="card-title">{{ course.title }}</h5>
-                    <p class="card-text">{{ course.description }}</p>
-                    <a href="{% url 'courseContent' id=course.id %}" class="btn btn-primary">Content</a>
-                </div>
+    <div class="container">
+        <form action="{% url 'displayCategory' %}" method="POST" class="row g-2 align-items-center mb-1 mx-5">
+            {% csrf_token %}
+            <div class="col-auto">
+                <select name="category" class="form-select form-select-sm my-3" aria-label="Default select example" onchange="this.form.submit()" style="width: 25rem;">
+                    <option value="" disabled selected style="color: gray;">Select a category !</option>
+                    {% for category in categories %}
+                        <option value="{{ category }}">{{ category }}</option>
+                    {% endfor %}
+                </select>
             </div>
-        {% endfor %}
+        </form>
+        <div class="row mx-3">
+            {% for course in courses %}
+                <div class="card mx-3" style="width: 18rem;">
+                    <img src="{{ course.imageUrl }}" class="card-img-top" alt="{{ course.title }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ course.title }}</h5>
+                        <p class="card-text">{{ course.description }}</p>
+                        <a href="{% url 'courseContent' id=course.id %}" class="btn btn-primary" style="background-color: rgba(127,127,213,1); color: white; border: none;" onmouseover="this.style.backgroundColor='white'; this.style.border='1px solid rgba(127,127,213,1)'; this.style.color='rgba(127,127,213,1)'" onmouseout="this.style.backgroundColor='rgba(127,127,213,1)'; this.style.color='white'; this.style.border='none'">Content</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
     </div>
 {% endblock %}
