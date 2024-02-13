@@ -15,7 +15,7 @@
         <div class="accordion w-75 mx-auto my-3" id="accordionPanelsStayOpenExample">
             <div class="accordion-item">
                 <h2 class="accordion-header">
-                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne" style="background-color: rgb(145, 145, 236); color: white;">
                 {{ item.lesson.title }}
                 </button>
                 </h2>
@@ -25,7 +25,7 @@
                             {% for video in item.videos %}
                             <li class="list-group-item d-flex justify-content-between align-items-center">
                                 <a style="color:rgb(30,48,80); text-decoration: none;" href="{{ video.video }}">
-                                    <i class="fa-brands fa-youtube"></i> 
+                                    <i class="fa-brands fa-youtube mr-1"></i> 
                                     {{video.title}}
                                 </a>
                                 {% if not user.is_superuser %}
@@ -51,7 +51,7 @@
                             {% for quiz in item.quizzes %}
                             <li class="list-group-item d-flex justify-content-between align-items-center">
                                 <a style="color:rgb(30,48,80); text-decoration: none;" href="{% url 'quizInfo' id=quiz.id %}">
-                                    <i class="fa-solid fa-sheet-plastic"></i>
+                                    <i class="fa-solid fa-sheet-plastic mr-1"></i>
                                     {{quiz.title}}
                                 </a>
                                 {% if user.is_superuser %}
@@ -85,7 +85,7 @@
                 </div>
                 {% if user.is_superuser %}
                 <div class="d-flex justify-content-center align-items-center">
-                    <a class="btn btn-warning mb-2 mx-3" href="{% url 'editLesson' id=item.lesson.id %}" style="background-color: rgba(127,127,213,1);; color: white; border: none;" onmouseover="this.style.backgroundColor='white'; this.style.border='1px solid rgba(127,127,213,1)'; this.style.color='rgba(127,127,213,1)'" onmouseout="this.style.backgroundColor='rgba(127,127,213,1)'; this.style.color='white'; this.style.border='none'">Edit Lesson</a>
+                    <a class="btn btn-warning mb-2 mx-3" href="{% url 'editLesson' id=item.lesson.id %}" style="background-color: rgba(127,127,213,1); color: white; border: none;" onmouseover="this.style.backgroundColor='white'; this.style.border='1px solid rgba(127,127,213,1)'; this.style.color='rgba(127,127,213,1)'" onmouseout="this.style.backgroundColor='rgba(127,127,213,1)'; this.style.color='white'; this.style.border='none'">Edit Lesson</a>
                     <a class="btn btn-danger mb-2" href="{% url 'deleteLesson' id=item.lesson.id %}" style="background-color: rgb(224, 0, 0); color: white; border: none;" onmouseover="this.style.backgroundColor='white'; this.style.border='1px solid rgb(224, 0, 0)'; this.style.color='rgb(224, 0, 0)'" onmouseout="this.style.backgroundColor='rgb(224, 0, 0)'; this.style.color='white'; this.style.border='none'" >Delete Lesson</a>
                 </div>
                 {% endif %}
@@ -95,11 +95,11 @@
     {% if user.is_superuser %}
     <div class="accordion w-75 mx-auto my-3" id="accordionPanelsStayOpenExample">
         <div class="accordion-item">
-            <h2 class="accordion-header">
-            <div class="accordion-button" type="text">
-                <a style="color:rgb(30,48,80); text-decoration: none;" href="{% url 'addLesson' id=course.id %}">
-                    <i class="fa-solid fa-plus mr-1"></i> 
-                    Add Lesson
+            <h2 class="accordion-header" >
+            <div class="accordion-button" type="text" style="background-color: rgb(145, 145, 236);">
+                <a style="color:rgb(30,48,80); text-decoration: none;" href="{% url 'addLesson' id=course.id %}" >
+                    <i class="fa-solid fa-plus mr-1" style="color: white;"></i> 
+                    <span style="color: white;">Add Lesson</span>
                 </a>
             </div>
             </h2>

@@ -3,7 +3,32 @@
 
 {% block body %}
     <div class="container">
-        <h3 class="mx-2">Result for: {{ quiz.title }}</h3>
+        <div class="card mb-3 mt-5 mx-auto" style="max-width: 600px;">
+            <div class="row g-0">
+                <div class="col-md-3">
+                    {% if passed %} 
+                        <img src="{% static 'revuCMS/Correct.jpg' %}" class="img-fluid rounded-start" alt="{{ Passed }}" style="max-width: 100px; margin: 1rem;">
+                    {% else %} 
+                        <img src="{% static 'revuCMS/Incorrect.jpg' %}" class="img-fluid rounded-start" alt="{{ Failed }}" style="max-width: 100px; margin: 1rem;">
+                    {% endif %}
+                </div>
+                <div class="col-md-9">
+                    <div class="card-body mt-2">
+                        <h5 class="card-title">{{ quiz.title }}</h5>
+                        <p class="card-text"><strong>Score:</strong> {{ score }}</p>                        
+                            {% if passed %}           
+                                <strong>Passed</strong>
+                            {% else %}
+                                <strong>Failed</strong>
+                            {% endif %}
+                            <br>
+                            {% if placement %}
+                                <strong>Placement:</strong> {{ placement }}
+                            {% endif %}            
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="mr-5 mb-5">
             {% for question in questions %}
             <div class="card my-3">
@@ -41,9 +66,5 @@
             </div>
             {% endfor %}
         </div>
-        <h2>Score: {{ score }} {% if passed %} Passed {% else %} Failed {% endif %} </h2>
-        {% if placement %}
-            <h2>You should start learning from: {{ placement }}</h2>
-        {% endif %}
     </div>
 {% endblock %}

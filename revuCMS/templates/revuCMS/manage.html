@@ -3,20 +3,9 @@
 
 {% block body %}
     <div class="container">
-        <form action="{% url 'displayCategory' %}" method="POST" class="row g-2 align-items-center mb-1 mx-5">
-            {% csrf_token %}
-            <div class="col-auto">
-                <select name="category" class="form-select form-select-sm my-3" aria-label="Default select example" onchange="this.form.submit()" style="width: 25rem;">
-                    <option value="" disabled selected style="color: gray;">Select a category !</option>
-                    {% for category in categories %}
-                        <option value="{{ category }}">{{ category }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-        </form>
         <div class="row mx-3">
             {% for course in courses %}
-                <div class="card mx-3" style="width: 18rem;">
+                <div class="card mx-3 mb-2" style="width: 17rem;">
                     <img src="{{ course.imageUrl }}" class="card-img-top" alt="{{ course.title }}">
                     <div class="card-body">
                         <h5 class="card-title">{{ course.title }}</h5>
@@ -26,7 +15,7 @@
                     </div>
                 </div>
             {% endfor %}
-            <div class="card mx-3 my-3" style="width: 18rem;">
+            <div class="card mx-3 pt-3 mb-2" style="width: 17rem;">
                 <img src="{% static 'revuCMS/addCourse.png' %}" alt="createCourse">
                 <div class="card-body">
                     <h5 class="card-title">Create a New Course</h5>

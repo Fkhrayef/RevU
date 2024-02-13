@@ -13,7 +13,33 @@
                 <img src="{% static 'revuCMS/Background.png' %}" alt="" style="margin-top: 5rem;">
             </div>
         </div>
-        <h2 class="mx-5">Courses:</h2>
+        <div class="row my-5 justify-content-center align-items-center" style="background: linear-gradient(to right,  #9191ec, #85a1e4);; padding-top: 20px; padding-bottom: 20px; border-radius: 25px; text-align: center;">
+            <h2 style="color: white; margin-bottom: 2rem; font-weight: bold;">Access These and more.. !</h2>
+            <div class="card mx-3" style="width: 14rem; border: 1px white solid; text-align: center; border-radius: 20px">
+                <img src="{% static 'revuCMS/Prerecorded.png' %}" class="card-img-top p-3" alt="Prerecorded Courses">
+                <div class="card-body">
+                    <p class="card-text" style="font-weight: bold;">Prerecorded Courses</p>
+                </div>
+            </div>
+            <div class="card mx-3" style="width: 14rem; border: 1px white solid; text-align: center; border-radius: 20px;">
+                <img src="{% static 'revuCMS/Placement.png' %}" class="card-img-top p-2" alt="Placements Tests">
+                <div class="card-body">
+                    <p class="card-text" style="font-weight: bold;">Placements Tests</p>
+                </div>
+            </div>
+            <div class="card mx-3" style="width: 14rem; border: 1px white solid; text-align: center; border-radius: 20px;">
+                <img src="{% static 'revuCMS/Chatting.png' %}" class="card-img-top p-2" alt="Real-time Chatting">
+                <div class="card-body">
+                    <p class="card-text" style="font-weight: bold;">Discussion Boards</p>
+                </div>
+            </div>
+            <div class="card mx-3" style="width: 14rem; border: 1px white solid; text-align: center; border-radius: 20px;">
+                <img src="{% static 'revuCMS/Awards.png' %}" class="card-img-top p-3" alt="Awards & Achievements">
+                <div class="card-body">
+                    <p class="card-text" style="font-weight: bold;">Awards</p>
+                </div>
+            </div>
+        </div>
         <form action="{% url 'displayCategory' %}" method="POST" class="row g-2 align-items-center mb-1 mx-5">
             {% csrf_token %}
             <div class="col-auto">
